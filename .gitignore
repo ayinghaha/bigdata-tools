@@ -1,2 +1,3 @@
-#忽略所有build目录
-build
+target/*
+.idea/*
+itm-web-service.iml

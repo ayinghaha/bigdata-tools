@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.VariableFilterDao">
+
+    <resultMap type="VariableFilter" id="FilterResult" >
+        <id property="id" column="id" />
+        <result property="itmID" column="itm_id" />
+        <result property="containerID" column="container_id"/>
+        <result property="name" column="name"/>
+        <result property="condition" column="condition"/>
+        <result property="value" column="value"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="variable" column="variable_id" select="com.iflytek.voicecloud.itm.dao.VariableDao.getVariableById" />
+    </resultMap>
+
+    <insert id="addVariableFileter" parameterType="VariableFilter" useGeneratedKeys="true" keyProperty="id">
+        insert into t_variable_filter values(null, #{itmID}, #{containerID}, #{name}, #{condition}, #{value}, #{variable.id}, #{trigger.id}, #{registTime}, #{updateTime})
+    </insert>
+
+    <select id="getVariableFilterById" parameterType="Integer" resultMap="FilterResult">
+        select * from t_variable_filter where id = #{id}
+    </select>
+
+    <select id="getFilterByTriggerId" parameterType="Integer" resultMap="FilterResult">
+        select * from t_variable_filter where trigger_id = #{id}
+    </select>
+
+    <select id="getFilterByIdList" resultMap="FilterResult">
+        select * from t_variable_filter where id in 
+        <foreach collection="list" item="filterId" index="index" open="(" close=")" separator=",">
+            #{filterId}
+        </foreach>
+    </select>
+
+    <select id="getFilterByVariableId" resultMap="FilterResult" parameterType="Integer">
+        select * from t_variable_filter where variable_id = #{variableId}
+    </select>
+
+    <insert id="addFilterList" parameterType="java.util.List" useGeneratedKeys="true">
+        <selectKey resultType="long" keyProperty="id" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        insert into t_variable_filter values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (null, #{item.itmID}, #{item.containerID}, #{item.name}, #{item.condition}, #{item.value}, #{item.variable.id}, #{item.trigger.id}, #{item.registTime}, #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <delete id="deleteFilterByTrigger" parameterType="Integer">
+        delete from t_variable_filter where trigger_id = #{triggerId}
+    </delete>
+
+</mapper>

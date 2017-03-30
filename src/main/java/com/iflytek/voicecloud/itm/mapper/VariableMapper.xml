@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.VariableDao">
+
+    <resultMap type="Variable" id="VariableResult" >
+        <id property="id" column="id" />
+        <result property="itmID" column="itm_id" />
+        <result property="containerID" column="container_id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+        <discriminator javaType="String" column="type">
+            <case value="ConstantStr" resultType="ConstantStr">
+                <result property="constantValue" column="constant_value"/>
+            </case>
+            <case value="Cookie" resultType="Cookie">
+                <result property="needDecode" column="need_decode"/>
+                <result property="cookieName" column="cookie_name"/>
+            </case>
+            <case value="CustomJS" resultType="CustomJS">
+                <result property="jsScript" column="js_script"/>
+            </case>
+            <case value="DataLayerVar" resultType="DataLayerVar">
+                <result property="refDataLayerVar" column="ref_data_layer_var"/>
+                <result property="dataLayerVersion" column="data_layer_version"/>
+                <result property="defaultValue" column="default_value"/>
+            </case>
+            <case value="DOMElement" resultType="DOMElement">
+                <result property="selectType" column="select_type"/>
+                <result property="selectParam" column="select_param"/>
+                <result property="attrName" column="attr_name"/>
+            </case>
+            <case value="JSVar" resultType="JSVar">
+                <result property="refJsVar" column="ref_js_var"/>
+            </case>
+            <case value="Debug" resultType="Debug">
+                <result property="isDebug" column="is_debug"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+    <insert id="addVariable" parameterType="Variable" useGeneratedKeys="true" keyProperty="id">
+        insert into t_variable
+        <choose>
+            <when test=" type == 'Cookie' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, need_decode, cookie_name)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{needDecode}, #{cookieName})
+            </when>
+            <when test=" type == 'CustomJS' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, js_script)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{jsScript})
+            </when>
+            <when test=" type == 'ConstantStr' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, constant_value)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{constantValue})
+            </when>
+            <when test=" type == 'DataLayerVar' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, ref_data_layer_var, data_layer_version, default_value)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{refDataLayerVar}, #{dataLayerVersion}, #{defaultValue})
+            </when>
+            <when test=" type == 'DOMElement' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, select_type, select_param, attr_name)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{selectType}, #{selectParam}, #{attrName})
+            </when>
+            <when test=" type == 'JSVar' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time, ref_js_var)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{refJsVar})
+            </when>
+            <when test=" type == 'Debug' ">
+                (id, itm_id, container_id, name, type, regist_time, update_time)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime})
+            </when>
+            <otherwise>
+                (id, itm_id, container_id, name, type, regist_time, update_time)
+                values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime})
+            </otherwise>
+        </choose>
+
+    </insert>
+
+    <select id="getVariableById" parameterType="Integer" resultMap="VariableResult" >
+        select * from t_variable where id = #{id}
+    </select>
+
+    <select id="getVariable" parameterType="Variable" resultMap="VariableResult">
+        select * from t_variable
+        <where>
+            <if test="id != null and id != 0">
+                id = #{id}
+            </if>
+            <if test="itmID != null">
+                AND itm_id = #{itmID}
+            </if>
+            <if test="containerID != null">
+                AND container_id = #{containerID}
+            </if>
+            <if test="name != null">
+                AND name like #{name}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteVariableById" parameterType="Integer">
+        delete from t_variable where id = #{variableId}
+    </delete>
+
+    <update id="updateVariableById" parameterType="Variable" >
+        update t_variable
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="type == 'Cookie'">cookie_name = #{cookieName},need_decode = #{needDecode}, constant_value=null, js_script=null, ref_data_layer_var=null, data_layer_version=null, default_value=null, select_type=null, select_param=null, attr_name=null, ref_js_var=null</if>
+            <if test="type == 'ConstantStr'">constant_value = #{constantValue}, cookie_name=null, need_decode=null, js_script=null, ref_data_layer_var=null, data_layer_version=null, default_value=null, select_type=null, select_param=null, attr_name=null, ref_js_var=null</if>
+            <if test="type == 'CustomJS'">js_script = #{jsScript},constant_value = null, cookie_name=null, need_decode=null, ref_data_layer_var=null, data_layer_version=null, default_value=null, select_type=null, select_param=null, attr_name=null, ref_js_var=null</if>
+            <if test="type == 'DataLayerVar'">ref_data_layer_var = #{refDataLayerVar}, data_layer_version = #{dataLayerVersion}, default_value = #{defaultValue},js_script = null,constant_value = null, cookie_name=null, need_decode=null, select_type=null, select_param=null, attr_name=null, ref_js_var=null</if>
+            <if test="type == 'DOMElement'">select_type = #{selectType}, select_param = #{selectParam}, attr_name = #{attrName}, cookie_name = null,need_decode = null, constant_value=null, js_script=null, ref_data_layer_var=null, data_layer_version=null, default_value=null,ref_js_var=null</if>
+            <if test="type == 'JSVar'">ref_js_var = #{refJsVar},constant_value =null, cookie_name=null, need_decode=null, js_script=null, ref_data_layer_var=null, data_layer_version=null, default_value=null, select_type=null, select_param=null, attr_name=null, ref_js_var=null</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>
