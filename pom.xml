@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>com.iflytek.maple</groupId>
+ <artifactId>itm-config-parent</artifactId>
+ <version>0.1.0-SNAPSHOT</version>
+ <packaging>pom</packaging>
+ <name>itm-config Parent</name>
+ <properties>
+  <!-- Set default encoding to UTF-8 to remove maven complaints -->
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <!-- defaults for flaky test and focused test exclusions -->
+  <test.exclude.pattern>$</test.exclude.pattern> <!-- junk pattern -->
+  <test.include.pattern>**/Test*.java</test.include.pattern>
+  <stagingDirectory>${project.basedir}/target/docs</stagingDirectory>
+ </properties>
+ <modules>
+  <module>itm-config-mr</module>
+  <module>itm-config-dist</module>
+ </modules>
+ <distributionManagement>
+  <repository>
+   <id>releases</id>
+   <name>Nexus Release Repository</name>
+   <url>http://192.168.75.210:38081/nexus/content/repositories/releases/</url>
+  </repository>
+  <snapshotRepository>
+   <id>snapshots</id>
+   <name>Nexus Snapshot Repository</name>
+   <url>http://192.168.75.210:38081/nexus/content/repositories/snapshots/</url>
+  </snapshotRepository>
+ </distributionManagement>
+ <build>
+  <pluginManagement>
+   <plugins>
+    <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-compiler-plugin</artifactId>
+     <version>2.3.2</version>
+     <configuration>
+      <source>1.6</source>
+      <target>1.6</target>
+     </configuration>
+    </plugin>
+    <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-surefire-plugin</artifactId>
+     <version>2.12</version>
+     <configuration>
+      <forkMode>always</forkMode>
+      <forkedProcessTimeoutInSeconds>900</forkedProcessTimeoutInSeconds>
+      <redirectTestOutputToFile>true</redirectTestOutputToFile>
+      <includes>
+       <include>${test.include.pattern}</include>
+      </includes>
+      <excludes>
+       <exclude>**/*$*</exclude>
+       <exclude>${test.exclude.pattern}</exclude>
+      </excludes>
+     </configuration>
+    </plugin>
+    <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-assembly-plugin</artifactId>
+     <version>2.3</version>
+    </plugin>
+    <plugin>
+     <groupId>com.thoughtworks.paranamer</groupId>
+     <artifactId>paranamer-maven-plugin</artifactId>
+     <version>2.3</version>
+    </plugin>
+   </plugins>
+  </pluginManagement>
+ </build>
+ <dependencies>
+  <dependency>
+   <groupId>org.apache.hadoop</groupId>
+   <artifactId>hadoop-core</artifactId>
+   <version>0.20.2-cdh3u6</version>
+	<scope>provided</scope>
+   <optional>true</optional>
+  </dependency>
+ </dependencies>
+</project>

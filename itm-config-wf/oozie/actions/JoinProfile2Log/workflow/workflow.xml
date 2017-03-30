@@ -1,0 +1,27 @@
+<workflow-app xmlns='uri:oozie:workflow:0.1' name='JoinProfile2Log'>
+	<start to="JoinProfile2Log" />
+	<action name="JoinProfile2Log">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+			<property>
+			<name>mapred.job.queue.name</name>
+			<value>${queue}</value>
+			</property>
+			</configuration>
+			<main-class>com.iflytek.maple.main.JoinProfile2LogMain</main-class>
+			<arg>${ulog}</arg>
+			<arg>${uprofile}</arg>
+			<arg>${output}</arg>
+			<capture-output />
+		</java>
+		<ok to="end" />
+		<error to="fail" />
+	</action>
+	<kill name="fail">
+		<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]
+		</message>
+	</kill>
+	<end name="end" />
+</workflow-app>

@@ -1,0 +1,73 @@
+<workflow-app xmlns='uri:oozie:workflow:0.1' name='LogProcess'>
+	<start to="forking" />
+	<fork name="forking">
+		<path start='UserClickLog2Avro' />
+		<path start='UserProfile2Avro' />
+	</fork>
+	<action name="UserClickLog2Avro">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>  
+			<configuration>
+			<property>
+			<name>mapred.job.queue.name</name>
+			<value>${queue}</value>
+			</property>
+			</configuration>
+			<main-class>com.iflytek.maple.main.UserClickLog2AvroMain</main-class>
+			<arg>${ulogtxt}</arg>
+			<arg>${ulog}</arg>
+			<capture-output />
+		</java>
+		<ok to="joining" />
+		<error to="fail" />
+	</action>
+
+	<action name="UserProfile2Avro">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+			<property>
+			<name>mapred.job.queue.name</name>
+			<value>${queue}</value>
+			</property>
+			</configuration>
+			<main-class>com.iflytek.maple.main.UserProfile2AvroMain</main-class>
+			<arg>${uprofiletxt}</arg>
+			<arg>${uprofile}</arg>
+			<capture-output />
+		</java>
+		<ok to="joining" />
+		<error to="fail" />
+	</action>
+
+
+	<join name="joining" to="JoinProfile2Log" />
+	
+	<action name="JoinProfile2Log">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+			<property>
+			<name>mapred.job.queue.name</name>
+			<value>${queue}</value>
+			</property>
+			</configuration>
+			<main-class>com.iflytek.maple.main.JoinProfile2LogMain</main-class>
+			<arg>${ulog}</arg>
+			<arg>${uprofile}</arg>
+			<arg>${logdetail}</arg>
+			<capture-output />
+		</java>
+		<ok to="end" />
+		<error to="fail" />
+	</action>
+
+	<kill name="fail">
+		<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]
+		</message>
+	</kill>
+	<end name="end" />
+</workflow-app>

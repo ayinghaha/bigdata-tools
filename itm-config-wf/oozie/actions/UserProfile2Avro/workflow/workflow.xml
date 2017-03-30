@@ -1,0 +1,26 @@
+<workflow-app xmlns='uri:oozie:workflow:0.1' name='UserProfile2Avro'>
+	<start to="UserProfile2Avro" />
+	<action name="UserProfile2Avro">
+		<java>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+			<property>
+			<name>mapred.job.queue.name</name>
+			<value>${queue}</value>
+			</property>
+	                </configuration>
+			<main-class>com.iflytek.maple.main.UserProfile2Avro</main-class>
+			<arg>${input}</arg>
+			<arg>${output}</arg>
+			<capture-output />
+		</java>
+		<ok to="end" />
+		<error to="fail" />
+	</action>
+	<kill name="fail">
+		<message>Failed, error message[${wf:errorMessage(wf:lastErrorNode())}]
+		</message>
+	</kill>
+	<end name="end" />
+</workflow-app>
