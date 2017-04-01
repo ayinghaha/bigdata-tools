@@ -114,7 +114,7 @@ public class TriggerController {
             List<Map<String, Object>> filtersInfo = JsonUtil.JsonToFilterList(filterList);
             List<String> conditionTypes = Arrays.asList(FilterController.conditionTypesList);
             for (Map<String, Object> filterInfo : filtersInfo) {
-                int variableId = Integer.parseInt((String) filterInfo.get("variableId"));
+                int variableId = (Integer) filterInfo.get("variableId");
                 Variable variable = variableService.getVariableById(variableId);
                 if (variable == null || !variable.getItmID().equals("jdshao")) {
                     message.setData("绑定变量不存在或无权添加");
