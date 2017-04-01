@@ -66,13 +66,13 @@ public class VariableController {
         // 反射得到对象
         String className = reflectPath + variableType;
         Class variableClass = Class.forName(className);
-        // 调用父类构造方法
+        /*// 调用父类构造方法
         Constructor[] constructors = variableClass.getConstructors();
-        System.out.println(constructors.toString());
         Object[] construtorParams = {0, itmID, containerID, name, variableType, new Date(), new Date()};
         // 注意在各自varible中的构造函数，第一个的类型必须符合此处要求
-        System.out.println(constructors[0].getParameterTypes().toString());
-        Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);
+        Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);*/
+        Object variableObject = variableClass.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class, Date.class, Date.class).
+                newInstance(0, itmID, containerID, name, variableType, new Date(), new Date());
         // 抓取参数为空的异常，返回异常信息
         try {
             Object subVariable = ReflectionUtils.loadObject(className, variableObject, request);
@@ -173,11 +173,13 @@ public class VariableController {
             try {
                 String className = reflectPath + variable.getType();
                 Class variableClass = Class.forName(className);
-                // 调用父类构造方法
+                /*// 调用父类构造方法
                 Constructor[] constructors = variableClass.getConstructors();
                 Object[] construtorParams = {variable.getId(), variable.getItmID(), variable.getContainerID(), variable.getName(), variable.getType(), variable.getRegistTime(), variable.getUpdateTime()};
                 // 注意在各自varible中的构造函数，第一个的类型必须符合此处要求
-                Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);
+                Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);*/
+                Object variableObject = variableClass.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class, Date.class, Date.class).
+                        newInstance(variable.getId(), variable.getItmID(), variable.getContainerID(), variable.getName(), variable.getType(), variable.getRegistTime(), variable.getUpdateTime());
                 subVariable = ReflectionUtils.loadObject(className, variableObject, request);
             } catch (Exception e) {
                 message.setData("类型不正确或该类型变量字段不存在");
