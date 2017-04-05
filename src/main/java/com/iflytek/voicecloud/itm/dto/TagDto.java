@@ -23,6 +23,7 @@ public class TagDto {
         resMap.put("action", tag.getAction());
         resMap.put("label", tag.getLabel());
         resMap.put("value", tag.getValue());
+        resMap.put("isDebug", tag.getIsDebug());
 
         // 写入trigger元素
         List<Trigger> triggers = tag.getTriggers();
