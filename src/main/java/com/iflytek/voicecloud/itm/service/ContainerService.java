@@ -15,4 +15,6 @@ public interface ContainerService {
 
     List<Container> getContainerList(Map<String, Object> condition);
 
+    int countContainer(Map<String, Object> condition);
+
 }

@@ -28,6 +28,11 @@ public class ContainerController {
      */
     public static final String[] containerType = {"Web", "IOS", "Android"};
 
+    /**
+     * 每页显示Container数量
+     */
+    private int perPage = 5;
+
     @RequestMapping("/add")
     public void addContainer(HttpServletRequest request, HttpServletResponse response, Container container) throws Exception {
 
@@ -78,7 +83,8 @@ public class ContainerController {
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("itmID", itmID);
         condition.put("containerID", containerID);
-        condition.put("page", (page - 1) * 5);
+        condition.put("page", (page - 1) * this.perPage);
+        condition.put("perPage", this.perPage);
 
         List<Container> containers = containerService.getContainerList(condition);
         List<Map<String, Object>> resMapList = new ArrayList<Map<String, Object>>();
@@ -86,7 +92,14 @@ public class ContainerController {
             resMapList.add(ContainerDto.formatContainerJson(container));
         }
 
-        Message message = new Message(1, resMapList);
+        // 总页数
+        int totalPage = containerService.countContainer(condition) / this.perPage + 1;
+
+        Map<String, Object> resData = new HashMap<String, Object>();
+        resData.put("containerList", containers);
+        resData.put("totalPage", totalPage);
+
+        Message message = new Message(1, resData);
         ResponseUtil.setResponseJson(response, message);
     }
 

@@ -24,4 +24,11 @@ public interface ContainerDao {
      */
     List<Container> getContainerList(Map<String, Object> condition);
 
+    /**
+     * 根据条件获取Container数量
+     * @param condition     条件Map
+     * @return  查询条件下的Container数量
+     */
+    int countContainer(Map<String, Object> condition);
+
 }

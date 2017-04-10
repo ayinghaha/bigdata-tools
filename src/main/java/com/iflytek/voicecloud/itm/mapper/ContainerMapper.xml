@@ -34,8 +34,26 @@
             </if>
         </where>
         <if test="page != null">
-            limit #{page}, 5
+            limit #{page}, #{perPage}
         </if>
+    </select>
+
+    <select id="countContainer" parameterType="Map" resultType="Integer">
+        select count(*) from t_container
+        <where>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="containerID != null">
+                container_id = #{containerID}
+            </if>
+            <if test="itmID != null">
+                and itm_id = #{itmID}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
     </select>
 
 </mapper>

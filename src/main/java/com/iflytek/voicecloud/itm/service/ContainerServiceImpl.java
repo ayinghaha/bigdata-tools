@@ -29,4 +29,13 @@ public class ContainerServiceImpl implements ContainerService {
     public List<Container> getContainerList(Map<String, Object> condition) {
         return containerDao.getContainerList(condition);
     }
+
+    /**
+     * 根据条件获取Container数量
+     * @param condition     条件Map
+     * @return  查询条件下的Container数量
+     */
+    public int countContainer(Map<String, Object> condition) {
+        return containerDao.countContainer(condition);
+    }
 }
