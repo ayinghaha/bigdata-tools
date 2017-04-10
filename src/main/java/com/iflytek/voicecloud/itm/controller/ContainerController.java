@@ -33,7 +33,7 @@ public class ContainerController {
 
         Message message = new Message(-1, "");
         List<String> typeList = Arrays.asList(containerType);
-        if (container.getItmID() == null || container.getContainerID() == null || container.getType() == null ) {
+        if (container.getItmID() == null || container.getType() == null || container.getName() == null ) {
             message.setData("参数不全");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -46,7 +46,7 @@ public class ContainerController {
         // 检测相同itmid下名称和是否重复
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("itmID", container.getItmID());
-        condition.put("containerID", container.getContainerID());
+        condition.put("name", container.getName());
         List<Container> detectContainer = containerService.getContainerList(condition);
         if (detectContainer.size() > 0) {
             message.setData("当前ITM账号下存在同名Container");
@@ -57,6 +57,8 @@ public class ContainerController {
         // 添加Container
         container.setRegistTime(new Date());
         container.setUpdateTime(new Date());
+        Long registTime = container.getRegistTime().getTime()/1000;
+        container.setContainerID(String.valueOf(Long.toHexString(registTime)));
         int resKey = containerService.addContainer(container);
         if (resKey < 0) {
             message.setData("添加失败");
@@ -72,9 +74,11 @@ public class ContainerController {
 
         String itmID = request.getParameter("itmID");
         String containerID = request.getParameter("containerID");
+        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("itmID", itmID);
         condition.put("containerID", containerID);
+        condition.put("page", (page - 1) * 5);
 
         List<Container> containers = containerService.getContainerList(condition);
         List<Map<String, Object>> resMapList = new ArrayList<Map<String, Object>>();

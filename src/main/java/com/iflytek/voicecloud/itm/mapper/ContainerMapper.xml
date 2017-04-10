@@ -14,12 +14,15 @@
     </resultMap>
 
     <insert id="addContainer" parameterType="Tag" keyProperty="id" useGeneratedKeys="true">
-        insert into t_container values(null, #{itmID}, #{containerID}, #{type}, #{registTime}, #{updateTime})
+        insert into t_container values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime})
     </insert>
 
     <select id="getContainerList" parameterType="Map" resultMap="ContainerResult">
         select * from t_container
         <where>
+            <if test="name != null">
+                name = #{name}
+            </if>
             <if test="containerID != null">
                 container_id = #{containerID}
             </if>
@@ -30,6 +33,9 @@
                 and type = #{type}
             </if>
         </where>
+        <if test="page != null">
+            limit #{page}, 5
+        </if>
     </select>
 
 </mapper>

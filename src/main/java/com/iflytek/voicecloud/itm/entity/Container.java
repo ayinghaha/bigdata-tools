@@ -23,6 +23,11 @@ public class Container {
     private String containerID;
 
     /**
+     * Container 名称
+     */
+    private String name;
+
+    /**
      * 类型 Web IOS Android
      */
     private String type;
@@ -62,6 +67,14 @@ public class Container {
 
     public void setContainerID(String containerID) {
         this.containerID = containerID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {

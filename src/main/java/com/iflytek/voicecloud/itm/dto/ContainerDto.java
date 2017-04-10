@@ -17,8 +17,10 @@ public class ContainerDto {
         Map<String, Object> resMap = new HashMap<String, Object>();
 
         // 设置父类成员变量
+        resMap.put("id", container.getId());
         resMap.put("itmID", container.getItmID());
         resMap.put("containerID", container.getContainerID());
+        resMap.put("name", container.getName());
         resMap.put("type", container.getType());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
         resMap.put("registTime", format.format(container.getRegistTime()));
