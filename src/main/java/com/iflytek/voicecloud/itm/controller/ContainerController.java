@@ -92,12 +92,16 @@ public class ContainerController {
             resMapList.add(ContainerDto.formatContainerJson(container));
         }
 
+        // 总数据条数
+        int total = containerService.countContainer(condition);
         // 总页数
-        int totalPage = containerService.countContainer(condition) / this.perPage + 1;
+        int totalPage = total / this.perPage + 1;
 
         Map<String, Object> resData = new HashMap<String, Object>();
         resData.put("containerList", containers);
+        resData.put("total", total);
         resData.put("totalPage", totalPage);
+        resData.put("perPage", this.perPage);
 
         Message message = new Message(1, resData);
         ResponseUtil.setResponseJson(response, message);

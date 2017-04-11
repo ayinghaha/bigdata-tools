@@ -72,6 +72,7 @@
                 AND value = #{value}
             </if>
         </where>
+        order by regist_time desc
     </select>
 
     <select id="getTagTriggers" resultMap="TagTrigger" parameterType="Tag">

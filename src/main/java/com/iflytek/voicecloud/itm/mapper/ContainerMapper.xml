@@ -33,6 +33,7 @@
                 and type = #{type}
             </if>
         </where>
+        order by regist_time desc
         <if test="page != null">
             limit #{page}, #{perPage}
         </if>
