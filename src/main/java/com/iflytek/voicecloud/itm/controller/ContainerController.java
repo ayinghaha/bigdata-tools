@@ -95,7 +95,7 @@ public class ContainerController {
         // 总数据条数
         int total = containerService.countContainer(condition);
         // 总页数
-        int totalPage = total / this.perPage + 1;
+        int totalPage = (total % this.perPage) == 0 ? total / this.perPage : total / this.perPage + 1;
 
         Map<String, Object> resData = new HashMap<String, Object>();
         resData.put("containerList", containers);
