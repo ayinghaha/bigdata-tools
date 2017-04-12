@@ -43,27 +43,17 @@ public class TagController {
 
 
     @RequestMapping("/add")
-    public void addTag(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void addTag(HttpServletRequest request, HttpServletResponse response, Tag tag) throws Exception {
 
-        String itmID = request.getParameter("itmID");
-        String containerID = request.getParameter("containerID");
-        String name = request.getParameter("name");
-        String type = request.getParameter("type");
-        String action = request.getParameter("action");
-        String category = request.getParameter("category");
-        String label = request.getParameter("label");
-        String value = request.getParameter("value");
-        String isDebug = request.getParameter("isDebug");
         String triggerIdList = request.getParameter("triggerIdList");
 
-        Message message = new Message();
-        message.setState(-1);
+        Message message = new Message(-1, "");
         List<String> asList = Arrays.asList(tagTypeList);
-        if (itmID == null || containerID == null || name == null || type == null || isDebug == null || triggerIdList == null || !asList.contains(type) ) {
+        if (tag.getItmID() == null || tag.getContainerID() == null || tag.getName() == null || tag.getType() == null || tag.getIsDebug() == null || triggerIdList == null || !asList.contains(tag.getType()) ) {
             message.setData("参数不全或类型不正确");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (type.equals("Event") && (value == null || label == null || action == null || category == null)) {
+        } else if (tag.getType().equals("Event") && (tag.getValue() == null || tag.getLabel() == null || tag.getAction() == null || tag.getCategory() == null)) {
             message.setData("类型为Event时，value、lable、action、category不能为空");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -76,7 +66,6 @@ public class TagController {
         if (triggerIds.size() > 0) {
             // 查询要绑定的变量
             if (triggers.size() != triggerIds.size()) {
-                message.setState(-1);
                 message.setData("绑定触发器不存在");
                 ResponseUtil.setResponseJson(response, message);
                 return ;
@@ -85,7 +74,6 @@ public class TagController {
             for (Trigger trigger : triggers) {
                 // TODO 判断当前触发器是否属于当前用户
                 if (!trigger.getItmID().equals("jdshao")) {
-                    message.setState(-1);
                     message.setData("绑定触发器不属于当前用户");
                     ResponseUtil.setResponseJson(response, message);
                     return ;
@@ -93,24 +81,28 @@ public class TagController {
             }
         }
 
+        // 检测tag名称是否重复
+        if (detectTagName(tag)) {
+            message.setData("当前Container账号下存在同名Tag");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
         // 添加Tag数据
-        Tag tag = new Tag(itmID, containerID, name, type, action, category, label, value, isDebug, new Date(), new Date());
-        int resKey = tagService.addTag(tag);
-        if (resKey < 0) {
+        tag.setRegistTime(new Date());
+        tag.setUpdateTime(new Date());
+        if (tagService.addTag(tag) < 0) {
             message.setData("添加失败");
             ResponseUtil.setResponseJson(response, message);
             return ;
         } else {
-            message.setState(1);
-            message.setData("添加成功");
             // 生成连接对象
             List<TagTriggerLink> tagTriggerLinks = new ArrayList<TagTriggerLink>();
             for (Trigger trigger : triggers) {
                 tagTriggerLinks.add(new TagTriggerLink(tag, trigger, new Date()));
             }
             // 保存Tag和Trigger连接对象
-            int lastId = tagService.addTagTriggerLinks(tagTriggerLinks);
-            if (lastId > 0) {
+            if (tagService.addTagTriggerLinks(tagTriggerLinks) > 0) {
                 message.setState(1);
                 message.setData("添加成功");
             } else {
@@ -137,18 +129,14 @@ public class TagController {
             resMap.add(TagDto.formatTagJson(tagItem));
         }
 
-        Message message = new Message();
-        message.setState(1);
-        message.setData(resMap);
+        Message message = new Message(1, resMap);
         ResponseUtil.setResponseJson(response, message);
     }
 
     @RequestMapping("/delete")
     public void deleteTag(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Message message = new Message();
-        message.setState(-1);
-
+        Message message = new Message(-1, "");
         String id = request.getParameter("id");
         if (id == null) {
             message.setData("标签id为空");
@@ -183,8 +171,7 @@ public class TagController {
     @RequestMapping("/update")
     public void updateTag(HttpServletRequest request, HttpServletResponse response, Tag tag) throws Exception {
 
-        Message message = new Message();
-        message.setState(-1);
+        Message message = new Message(-1, "");
 
         if (tag.getId() == 0) {
             message.setData("标签的主键id为空");
@@ -199,6 +186,13 @@ public class TagController {
             return ;
         } else if (!detectTag.getItmID().equals("jdshao")) {
             message.setData("当前用户没有权限操作");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 检测tag名称是否重复
+        if (detectTagName(tag)) {
+            message.setData("当前Container账号下存在同名Tag");
             ResponseUtil.setResponseJson(response, message);
             return ;
         }
@@ -221,9 +215,6 @@ public class TagController {
             message.setData("更新失败");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else {
-            message.setState(1);
-            message.setData("更新成功");
         }
 
         // 更新tag和trigger对应关系
@@ -234,7 +225,6 @@ public class TagController {
                 // 查询要绑定的变量
                 List<Trigger> triggers = triggerService.getTriggerByIdList(triggerIds);
                 if (triggers.size() != triggerIds.size()) {
-                    message.setState(-1);
                     message.setData("绑定触发器不存在或者重复绑定");
                     ResponseUtil.setResponseJson(response, message);
                     return ;
@@ -245,7 +235,6 @@ public class TagController {
                 for (Trigger trigger : triggers) {
                     // TODO 判断当前触发器是否属于当前用户
                     if (!trigger.getItmID().equals("jdshao")) {
-                        message.setState(-1);
                         message.setData("绑定触发器不属于当前用户");
                         ResponseUtil.setResponseJson(response, message);
                         return ;
@@ -257,8 +246,7 @@ public class TagController {
                 tagService.deleteTagLink(tag);
 
                 // 保存Tag和Trigger连接对象
-                int lastId = tagService.addTagTriggerLinks(tagTriggerLinks);
-                if (lastId > 0) {
+                if (tagService.addTagTriggerLinks(tagTriggerLinks) > 0) {
                     message.setState(1);
                     message.setData("添加/更新成功");
                 } else {
@@ -266,8 +254,24 @@ public class TagController {
                 }
             }
         }
-
         ResponseUtil.setResponseJson(response, message);
+    }
+
+    /**
+     * 检测 Tag 名称是否重复
+     * @param tag   Tag对象
+     * @return  true 重复 false 不重复
+     */
+    private boolean detectTagName(Tag tag) {
+        Tag detectTag = new Tag(tag.getItmID(), tag.getContainerID(), tag.getName(), null, null, null, null, null, null, null, null);
+        List<Tag> detectTags = tagService.getTagList(detectTag);
+        if (detectTags.size() > 0) {
+            int detectId = detectTags.get(0).getId();
+            if (detectId != tag.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

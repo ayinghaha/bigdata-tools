@@ -135,15 +135,10 @@ public class TriggerController {
         }
 
         // 检测 trigger 是否重名
-        Trigger detectTrigger = new Trigger(trigger.getItmID(), trigger.getContainerID(), trigger.getName(), null, null, null, null);
-        List<Trigger> detectTriggerList = triggerService.getTriggers(detectTrigger);
-        if (detectTriggerList.size() > 0) {
-            int detectId = detectTriggerList.get(0).getId();
-            if (detectId != trigger.getId()) {
-                message.setData("相同Container下触发器name相同");
-                ResponseUtil.setResponseJson(response, message);
-                return ;
-            }
+        if (detectTriggerName(trigger)) {
+            message.setData("相同Container下触发器name相同");
+            ResponseUtil.setResponseJson(response, message);
+            return;
         }
 
         // trigger id 不为空为更新的情况
@@ -261,6 +256,13 @@ public class TriggerController {
             return ;
         }
 
+        // 检测 trigger 是否重名
+        if (detectTriggerName(trigger)) {
+            message.setData("相同Container下触发器name相同");
+            ResponseUtil.setResponseJson(response, message);
+            return;
+        }
+
         // 检测trigger是否存在
         Trigger detectTrigger = triggerService.getTriggerById(trigger.getId());
         if (detectTrigger == null) {
@@ -284,4 +286,20 @@ public class TriggerController {
         ResponseUtil.setResponseJson(response, message);
     }
 
+    /**
+     * 检测 Trigger 是否重名
+     * @param trigger   trigger对象
+     * @return  true 重名 false 不重名
+     */
+    private boolean detectTriggerName(Trigger trigger) {
+        Trigger detectTrigger = new Trigger(trigger.getItmID(), trigger.getContainerID(), trigger.getName(), null, null, null, null);
+        List<Trigger> detectTriggerList = triggerService.getTriggers(detectTrigger);
+        if (detectTriggerList.size() > 0) {
+            int detectId = detectTriggerList.get(0).getId();
+            if (detectId != trigger.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
