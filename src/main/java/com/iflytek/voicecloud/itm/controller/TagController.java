@@ -235,7 +235,7 @@ public class TagController {
                 List<Trigger> triggers = triggerService.getTriggerByIdList(triggerIds);
                 if (triggers.size() != triggerIds.size()) {
                     message.setState(-1);
-                    message.setData("绑定触发器不存在");
+                    message.setData("绑定触发器不存在或者重复绑定");
                     ResponseUtil.setResponseJson(response, message);
                     return ;
                 }
@@ -260,9 +260,9 @@ public class TagController {
                 int lastId = tagService.addTagTriggerLinks(tagTriggerLinks);
                 if (lastId > 0) {
                     message.setState(1);
-                    message.setData("添加成功");
+                    message.setData("添加/更新成功");
                 } else {
-                    message.setData("添加失败");
+                    message.setData("添加/更新失败");
                 }
             }
         }

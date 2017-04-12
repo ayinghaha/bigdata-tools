@@ -134,8 +134,20 @@ public class TriggerController {
             }
         }
 
+        // 检测 trigger 是否重名
+        Trigger detectTrigger = new Trigger(trigger.getItmID(), trigger.getContainerID(), trigger.getName(), null, null, null, null);
+        List<Trigger> detectTriggerList = triggerService.getTriggers(detectTrigger);
+        if (detectTriggerList.size() > 0) {
+            int detectId = detectTriggerList.get(0).getId();
+            if (detectId != trigger.getId()) {
+                message.setData("相同Container下触发器name相同");
+                ResponseUtil.setResponseJson(response, message);
+                return ;
+            }
+        }
+
         // trigger id 不为空为更新的情况
-        int resKey = 0;
+        int resKey ;
         if (trigger.getId() > 0) {
             resKey = triggerService.updateTrigger(trigger);
             // 将原trigger下的filter全部删除

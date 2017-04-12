@@ -59,6 +59,7 @@
                 AND name = #{name}
             </if>
         </where>
+        order by regist_time desc
     </select>
 
     <select id="getLinkByTriggerId" parameterType="Integer" resultMap="TagTriggerLinkResult">

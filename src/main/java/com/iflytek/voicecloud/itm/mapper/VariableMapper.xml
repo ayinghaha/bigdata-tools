@@ -85,7 +85,7 @@
         select * from t_variable where id = #{id}
     </select>
 
-    <select id="getVariable" parameterType="Variable" resultMap="VariableResult">
+    <select id="getVariable" parameterType="Map" resultMap="VariableResult">
         select * from t_variable
         <where>
             <if test="id != null and id != 0">
@@ -104,6 +104,7 @@
                 AND type = #{type}
             </if>
         </where>
+        order by regist_time desc
     </select>
 
     <delete id="deleteVariableById" parameterType="Integer">

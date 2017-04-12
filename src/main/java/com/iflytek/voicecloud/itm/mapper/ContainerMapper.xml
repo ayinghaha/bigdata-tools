@@ -20,17 +20,14 @@
     <select id="getContainerList" parameterType="Map" resultMap="ContainerResult">
         select * from t_container
         <where>
-            <if test="name != null">
-                name = #{name}
-            </if>
             <if test="containerID != null">
                 container_id = #{containerID}
             </if>
             <if test="itmID != null">
                 and itm_id = #{itmID}
             </if>
-            <if test="type != null">
-                and type = #{type}
+            <if test="keyWords != null and keyWords != '' ">
+                and (type like CONCAT('%',#{keyWords},'%') or name like CONCAT('%',#{keyWords},'%'))
             </if>
         </where>
         order by regist_time desc
@@ -42,17 +39,14 @@
     <select id="countContainer" parameterType="Map" resultType="Integer">
         select count(*) from t_container
         <where>
-            <if test="name != null">
-                name = #{name}
-            </if>
             <if test="containerID != null">
                 container_id = #{containerID}
             </if>
             <if test="itmID != null">
                 and itm_id = #{itmID}
             </if>
-            <if test="type != null">
-                and type = #{type}
+            <if test="keyWords != null and keyWords != '' ">
+                and (type like CONCAT('%',#{keyWords},'%') or name like CONCAT('%',#{keyWords},'%'))
             </if>
         </where>
     </select>

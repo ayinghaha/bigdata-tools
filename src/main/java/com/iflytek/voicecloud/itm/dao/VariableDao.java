@@ -3,6 +3,7 @@ package com.iflytek.voicecloud.itm.dao;
 import com.iflytek.voicecloud.itm.entity.variable.Variable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 变量数据访问层接口
@@ -25,10 +26,10 @@ public interface VariableDao {
 
     /**
      * 根据条件查询变量列表
-     * @param variable  查询的变量对象
+     * @param condition  查询的变量对象
      * @return  对象列表
      */
-    List<Variable> getVariable(Variable variable);
+    List<Variable> getVariable(Map<String, Object> condition);
 
     /**
      * 通过变量主键删除变量

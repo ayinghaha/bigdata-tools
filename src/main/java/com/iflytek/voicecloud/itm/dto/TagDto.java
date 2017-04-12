@@ -21,6 +21,7 @@ public class TagDto {
         resMap.put("name", tag.getName());
         resMap.put("type", tag.getType());
         resMap.put("action", tag.getAction());
+        resMap.put("category", tag.getCategory());
         resMap.put("label", tag.getLabel());
         resMap.put("value", tag.getValue());
         resMap.put("isDebug", tag.getIsDebug());

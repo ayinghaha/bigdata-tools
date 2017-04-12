@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jdshao on 2017/3/1
@@ -37,11 +38,11 @@ public class VariableServiceImpl implements VariableService {
 
     /**
      * 根据条件查询变量列表
-     * @param variable  查询的变量对象
+     * @param condition  查询的变量对象
      * @return  对象列表
      */
-    public List<Variable> getVariable(Variable variable) {
-        return variableDao.getVariable(variable);
+    public List<Variable> getVariable(Map<String, Object> condition) {
+        return variableDao.getVariable(condition);
     }
 
     /**

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Constructor;
@@ -43,52 +44,38 @@ public class VariableController {
     private static final String reflectPath = "com.iflytek.voicecloud.itm.entity.variable.";
 
     @RequestMapping("/add")
-    public void addVariable(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void addVariable(HttpServletRequest request, HttpServletResponse response, Variable variable) throws Exception{
 
         // 返回对象
-        Message message = new Message();
-
-        // 获取请求参数
-        String itmID = request.getParameter("itmID");
-        String containerID = request.getParameter("containerID");
-        String name = request.getParameter("name");
-        String variableType = request.getParameter("type");
+        Message message = new Message(-1, "");
 
         // 反射得到子类变量对象
         List<String> asList = Arrays.asList(variableTypeList);
-        if (itmID == null || containerID == null || name == null || variableType == null || !asList.contains(variableType)) {
-            message.setState(-1);
+        if (variable.getItmID() == null || variable.getContainerID() == null || variable.getName() == null || variable.getType() == null || !asList.contains(variable.getType())) {
             message.setData("参数不全或参数类型不正确");
             ResponseUtil.setResponseJson(response, message);
             return ;
         }
 
-        // 反射得到对象
-        String className = reflectPath + variableType;
-        Class variableClass = Class.forName(className);
-        /*// 调用父类构造方法
-        Constructor[] constructors = variableClass.getConstructors();
-        Object[] construtorParams = {0, itmID, containerID, name, variableType, new Date(), new Date()};
-        // 注意在各自varible中的构造函数，第一个的类型必须符合此处要求
-        Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);*/
-        Object variableObject = variableClass.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class, Date.class, Date.class).
-                newInstance(0, itmID, containerID, name, variableType, new Date(), new Date());
+        // 检测是否存在重名变量
+        if (detectVariableName(variable)) {
+            message.setData("相同Container下添加变量name相同");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
         // 抓取参数为空的异常，返回异常信息
         try {
-            Object subVariable = ReflectionUtils.loadObject(className, variableObject, request);
-            int resKey = variableService.saveVariable(subVariable);
-            if (resKey > 0) {
+            Object subVariable = reflectLoadSubVariable(variable, request);
+            if (variableService.saveVariable(subVariable) > 0) {
                 message.setState(1);
                 message.setData("插入成功");
             } else {
-                message.setState(-1);
                 message.setData("插入失败");
             }
-            ResponseUtil.setResponseJson(response, message);
-            return ;
-        } catch (ParamLackException lackParamException) {
-            message.setState(-1);
+        } catch (Exception lackParamException) {
             message.setData(lackParamException.getMessage());
+        } finally {
             ResponseUtil.setResponseJson(response, message);
         }
     }
@@ -96,7 +83,13 @@ public class VariableController {
     @RequestMapping("/get")
     public void getVariable(HttpServletRequest request, HttpServletResponse response, Variable variable) throws Exception {
 
-        List<Variable> variables = variableService.getVariable(variable);
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("id", variable.getId());
+        condition.put("itmID", variable.getItmID());
+        condition.put("containerID", variable.getContainerID());
+        condition.put("name", variable.getName());
+        condition.put("type", variable.getType());
+        List<Variable> variables = variableService.getVariable(condition);
         Message message = new Message();
         if (variables.size() == 0) {
             message.setState(-1);
@@ -113,14 +106,13 @@ public class VariableController {
         message.setState(1);
         message.setData(varResList);
         ResponseUtil.setResponseJson(response, message);
-        return ;
     }
 
     @RequestMapping("/delete")
     public void deleteVariable(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         String id = request.getParameter("id");
-        Message message = new Message();
-        message.setState(-1);
+        Message message = new Message(-1, "");
 
         if (id == null) {
             message.setData("删除变量id为空");
@@ -171,16 +163,7 @@ public class VariableController {
         Object subVariable = null;
         if (variable.getType() != null) {
             try {
-                String className = reflectPath + variable.getType();
-                Class variableClass = Class.forName(className);
-                /*// 调用父类构造方法
-                Constructor[] constructors = variableClass.getConstructors();
-                Object[] construtorParams = {variable.getId(), variable.getItmID(), variable.getContainerID(), variable.getName(), variable.getType(), variable.getRegistTime(), variable.getUpdateTime()};
-                // 注意在各自varible中的构造函数，第一个的类型必须符合此处要求
-                Object variableObject = variableClass.getConstructor(constructors[0].getParameterTypes()).newInstance(construtorParams);*/
-                Object variableObject = variableClass.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class, Date.class, Date.class).
-                        newInstance(variable.getId(), variable.getItmID(), variable.getContainerID(), variable.getName(), variable.getType(), variable.getRegistTime(), variable.getUpdateTime());
-                subVariable = ReflectionUtils.loadObject(className, variableObject, request);
+                subVariable = reflectLoadSubVariable(variable, request);
             } catch (Exception e) {
                 message.setData("类型不正确或该类型变量字段不存在");
                 ResponseUtil.setResponseJson(response, message);
@@ -188,25 +171,71 @@ public class VariableController {
             }
         }
 
-        Variable detectVar = variableService.getVariableById(id);
-        if (detectVar == null) {
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("id", variable.getId());
+        condition.put("itmID", variable.getItmID());
+        condition.put("containerID", variable.getContainerID());
+        List<Variable> detectVarList = variableService.getVariable(condition);
+        if (detectVarList.size() == 0) {
             message.setData("更新变量不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!detectVar.getItmID().equals("jdshao")) {
+        } else if (!detectVarList.get(0).getItmID().equals("jdshao")) {
             message.setData("当前登录用户无权删除该变量");
             ResponseUtil.setResponseJson(response, message);
             return ;
         }
 
-        int res = variableService.updateVariableById(subVariable);
-        if (res > 0) {
+        // 检测是否存在重名变量
+        if (detectVariableName(variable)) {
+            message.setData("相同Container下添加变量name相同");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        if (variableService.updateVariableById(subVariable) > 0) {
             message.setState(1);
             message.setData("更新成功");
         } else {
             message.setData("更新失败");
         }
         ResponseUtil.setResponseJson(response, message);
+    }
+
+    /**
+     * 反射并加载属性得到变量子类
+     * @param variable  变量对象
+     * @param request   请求对象，其中包含变量的各个属性
+     * @return          变量子类对象
+     * @throws Exception    属性不存在抛出异常
+     */
+    private Object reflectLoadSubVariable(Variable variable, HttpServletRequest request) throws Exception {
+        String className = reflectPath + variable.getType();
+        Class variableClass = Class.forName(className);
+        // 调用构造方法
+        Object variableObject = variableClass.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class, Date.class, Date.class).
+                newInstance(variable.getId(), variable.getItmID(), variable.getContainerID(), variable.getName(), variable.getType(), variable.getRegistTime(), variable.getUpdateTime());
+        return ReflectionUtils.loadObject(className, variableObject, request);
+    }
+
+    /**
+     * 检测变量名是否重复
+     * @param variable  变量对象
+     */
+    private boolean detectVariableName(Variable variable) {
+        // 检测是否存在重名变量
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("itmID", variable.getItmID());
+        condition.put("containerID", variable.getContainerID());
+        condition.put("name", variable.getName());
+        List<Variable> detectVar = variableService.getVariable(condition);
+        if (detectVar.size() > 0) {
+            int detectId = detectVar.get(0).getId();
+            if (detectId != variable.getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

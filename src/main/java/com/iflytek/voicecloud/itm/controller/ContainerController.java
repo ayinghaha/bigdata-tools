@@ -79,10 +79,12 @@ public class ContainerController {
 
         String itmID = request.getParameter("itmID");
         String containerID = request.getParameter("containerID");
+        String keyWords = request.getParameter("keyWords");
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("itmID", itmID);
         condition.put("containerID", containerID);
+        condition.put("keyWords", keyWords);
         condition.put("page", (page - 1) * this.perPage);
         condition.put("perPage", this.perPage);
 
