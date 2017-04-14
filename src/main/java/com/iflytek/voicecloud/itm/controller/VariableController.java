@@ -92,8 +92,8 @@ public class VariableController {
         List<Variable> variables = variableService.getVariable(condition);
         Message message = new Message();
         if (variables.size() == 0) {
-            message.setState(-1);
-            message.setData("查询结果为空");
+            message.setState(1);
+            message.setData(new ArrayList<Variable>());
             ResponseUtil.setResponseJson(response, message);
             return ;
         }

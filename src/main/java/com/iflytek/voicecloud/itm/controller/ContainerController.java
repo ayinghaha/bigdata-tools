@@ -26,7 +26,7 @@ public class ContainerController {
     /**
      * container 类型
      */
-    public static final String[] containerType = {"Web", "IOS", "Android"};
+    public static final String[] containerType = {"Web", "iOS", "Android"};
 
     /**
      * 每页显示Container数量
