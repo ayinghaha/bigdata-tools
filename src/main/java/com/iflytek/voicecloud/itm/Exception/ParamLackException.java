@@ -1,4 +1,4 @@
-package com.iflytek.voicecloud.itm.Exception;
+package com.iflytek.voicecloud.itm.exception;
 
 /**
  * Created by jdshao on 2017/3/6

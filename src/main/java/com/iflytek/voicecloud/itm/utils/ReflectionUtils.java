@@ -1,9 +1,8 @@
 package com.iflytek.voicecloud.itm.utils;
 
-import com.iflytek.voicecloud.itm.Exception.ParamLackException;
+import com.iflytek.voicecloud.itm.exception.ParamLackException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.lang.reflect.Field;
 
 /**

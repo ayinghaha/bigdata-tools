@@ -1,23 +1,19 @@
 package com.iflytek.voicecloud.itm.controller;
 
-import com.iflytek.voicecloud.itm.Exception.ParamLackException;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.VariableDto;
 import com.iflytek.voicecloud.itm.entity.VariableFilter;
 import com.iflytek.voicecloud.itm.entity.variable.Variable;
 import com.iflytek.voicecloud.itm.service.VariableFilterService;
 import com.iflytek.voicecloud.itm.service.VariableService;
-import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ReflectionUtils;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**

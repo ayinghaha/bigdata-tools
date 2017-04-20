@@ -1,7 +1,8 @@
-package com.iflytek.voicecloud.itm.service;
+package com.iflytek.voicecloud.itm.service.impl;
 
 import com.iflytek.voicecloud.itm.dao.ContainerDao;
 import com.iflytek.voicecloud.itm.entity.Container;
+import com.iflytek.voicecloud.itm.service.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

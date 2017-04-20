@@ -46,21 +46,13 @@ public class FilterController {
     public static final String[] conditionTypesList = {"equals","contains","matchesCSS","matchesRegEx","notEquals","notContains","notMatchesCSS","notMatchesRegEx","lt","lte","gt","gte"};
 
     @RequestMapping("/add")
-    public void addVariableFilter(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void addVariableFilter(HttpServletRequest request, HttpServletResponse response, VariableFilter variableFilter) throws Exception {
 
-        // 获取请求参数
-        String itmID = request.getParameter("itmID");
-        String containerID = request.getParameter("containerID");
-        String condition = request.getParameter("condition");
-        String value = request.getParameter("value");
         String variableId = request.getParameter("variableId");
         String triggerId = request.getParameter("triggerId");
-
-        Message message = new Message();
-        message.setState(-1);
-
+        Message message = new Message(-1, "");
         List<String> conditionTypes = Arrays.asList(conditionTypesList);
-        if (itmID == null || containerID == null || condition == null || value == null || variableId == null || triggerId == null || !conditionTypes.contains(condition)) {
+        if (variableFilter.getItmID() == null || variableFilter.getContainerID() == null || variableFilter.getCondition() == null || variableFilter.getValue() == null || variableId == null || triggerId == null || !conditionTypes.contains(variableFilter.getCondition())) {
             message.setData("参数不全");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -82,7 +74,8 @@ public class FilterController {
         }
 
         // 添加过滤器
-        VariableFilter variableFilter = new VariableFilter(itmID, containerID, "filter", variable, condition, value, trigger, new Date(), new Date());
+        variableFilter.setTrigger(trigger);
+        variableFilter.setVariable(variable);
         int resKey = filterService.addVariableFileter(variableFilter);
         if (resKey > 0) {
             message.setState(1);
@@ -92,8 +85,6 @@ public class FilterController {
             message.setData("添加失败");
             ResponseUtil.setResponseJson(response, message);
         }
-
-        return ;
     }
 
     @RequestMapping("/get")
@@ -147,10 +138,4 @@ public class FilterController {
             return ;
         }
     }
-
-    @RequestMapping("/update")
-    public void updateVariableFilter(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
-    }
-
 }
