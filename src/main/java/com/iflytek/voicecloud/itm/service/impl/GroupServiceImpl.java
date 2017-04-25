@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.service.impl;
 
 import com.iflytek.voicecloud.itm.dao.GroupDao;
 import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,32 @@ public class GroupServiceImpl implements GroupService {
      */
     public List<Group> getGroup(Map<String, Object> condition) {
         return groupDao.getGroup(condition);
+    }
+
+    /**
+     * 通过主键查询客户信息
+     * @param groupId   group主键
+     * @return      group对象
+     */
+    public Group getGroupById(int groupId) {
+        return groupDao.getGroupById(groupId);
+    }
+
+    /**
+     * 获取客户下的用户
+     * @param groupId     客户对象id
+     * @return     用户列表
+     */
+    public List<User> getUserListByGroup(int groupId) {
+        return groupDao.getUserListByGroup(groupId);
+    }
+
+    /**
+     * 获取用户组总数
+     * @param condition     查询条件
+     * @return      用户组总数
+     */
+    public int getGroupCount(Map<String, Object> condition) {
+        return groupDao.getGroupCount(condition);
     }
 }

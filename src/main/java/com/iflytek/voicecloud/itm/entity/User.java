@@ -13,7 +13,7 @@ public class User {
     private int id;
 
     /**
-     * 用户名 邮箱或手机号
+     * 用户名
      */
     private String userName;
 
@@ -26,6 +26,11 @@ public class User {
      * 用户密码盐
      */
     private String salt;
+
+    /**
+     * 明文密码
+     */
+    private String plainPassword;
 
     /**
      * 分析后台token
@@ -41,11 +46,6 @@ public class User {
      * 备注
      */
     private String remark;
-
-    /**
-     * 权限值
-     */
-    private int privilege;
 
     /**
      * 上次登录时间
@@ -97,6 +97,14 @@ public class User {
         this.salt = salt;
     }
 
+    public String getPlainPassword() {
+        return plainPassword;
+    }
+
+    public void setPlainPassword(String plainPassword) {
+        this.plainPassword = plainPassword;
+    }
+
     public String getToken() {
         return token;
     }
@@ -119,14 +127,6 @@ public class User {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public int getPrivilege() {
-        return privilege;
-    }
-
-    public void setPrivilege(int privilege) {
-        this.privilege = privilege;
     }
 
     public Date getLastLogin() {

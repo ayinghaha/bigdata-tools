@@ -14,6 +14,19 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <resultMap id="UserResult" type="User">
+        <id property="id" column="id" />
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="token" column="token"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="remark" column="remark"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <insert id="addGroup" parameterType="Group" keyProperty="id" useGeneratedKeys="true">
         insert into t_group values(null, #{name}, #{company}, #{remark}, #{itmID}, #{registTime}, #{updateTime})
     </insert>
@@ -25,10 +38,30 @@
                 id = #{id}
             </if>
         </where>
+        order by regist_time desc
+        <if test="page != null">
+            limit #{page}, #{perPage}
+        </if>
+    </select>
+
+    <select id="getGroupById" parameterType="Integer" resultMap="GroupResult">
+        select * from t_group where id = #{groupId}
     </select>
 
     <update id="updateGroup" parameterType="Group">
         update t_group set name=#{name}, company=#{company}, remark=#{remark} where id=#{id}
     </update>
+
+    <select id="getUserListByGroup" parameterType="Integer" resultMap="UserResult">
+        select t_user.id, t_user.user_name, t_user_group_link.remark
+            from t_user join t_user_group_link
+            on t_user.id = t_user_group_link.user_id
+            where group_id = #{id}
+    </select>
+
+    <select id="getGroupCount" parameterType="Map" resultType="Integer">
+        select count(*) from t_group
+            <where></where>
+    </select>
 
 </mapper>

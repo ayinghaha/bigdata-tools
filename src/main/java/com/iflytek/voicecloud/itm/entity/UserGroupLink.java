@@ -20,6 +20,16 @@ public class UserGroupLink {
     private User user;
 
     /**
+     * 权限值
+     */
+    private int privilege;
+
+    /**
+     * 当前客户下的备注
+     */
+    private String remark;
+
+    /**
      * 插入时间
      */
     private Date registDate;
@@ -49,6 +59,22 @@ public class UserGroupLink {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getPrivilege() {
+        return privilege;
+    }
+
+    public void setPrivilege(int privilege) {
+        this.privilege = privilege;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public Date getRegistDate() {

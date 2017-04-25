@@ -4,10 +4,34 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iflytek.voicecloud.itm.dao.UserDao">
 
+    <resultMap id="UserResult" type="User">
+        <id property="id" column="id" />
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="token" column="token"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="remark" column="remark"/>
+        <result property="privilege" column="privilege"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
 
+    <insert id="userRegist" parameterType="User" keyProperty="id" useGeneratedKeys="true">
+        insert into t_user values(null, #{userName}, #{password}, #{salt}, #{plainPassword}, #{token}, #{nickName}, null, #{lastLogin}, #{registTime}, #{updateTime})
+    </insert>
 
+    <select id="getUserById" parameterType="Integer" resultMap="UserResult">
+        select * from t_user where id = #{userId}
+    </select>
 
+    <select id="getUserByName" parameterType="String" resultMap="UserResult">
+        select * from t_user where user_name = #{name}
+    </select>
 
-
+    <insert id="addUserGroupLink" parameterType="UserGroupLink" keyProperty="id" useGeneratedKeys="true">
+        insert into t_user_group_link values(null, #{user.id}, #{group.id}, 0, #{remark}, null)
+    </insert>
 
 </mapper>

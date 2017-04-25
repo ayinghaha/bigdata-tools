@@ -1,6 +1,7 @@
 package com.iflytek.voicecloud.itm.dao;
 
 import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.User;
 
 import java.util.List;
 import java.util.Map;
@@ -30,5 +31,26 @@ public interface GroupDao {
      * @return      客户列表
      */
     List<Group> getGroup(Map<String, Object> condition);
+
+    /**
+     * 通过主键查询客户信息
+     * @param groupId   group主键
+     * @return      group对象
+     */
+    Group getGroupById(int groupId);
+
+    /**
+     * 获取客户下的用户
+     * @param id     客户对象id
+     * @return     用户列表
+     */
+    List<User> getUserListByGroup(int id);
+
+    /**
+     * 获取用户组总数
+     * @param condition     查询条件
+     * @return      用户组总数
+     */
+    int getGroupCount(Map<String, Object> condition);
 
 }

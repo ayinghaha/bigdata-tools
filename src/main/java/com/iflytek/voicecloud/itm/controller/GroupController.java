@@ -1,7 +1,9 @@
 package com.iflytek.voicecloud.itm.controller;
 
+import com.iflytek.voicecloud.itm.dto.GroupDto;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.concurrent.locks.Condition;
 
 /**
  * 客户(用户组)
@@ -22,12 +25,16 @@ public class GroupController  {
     @Autowired
     GroupService groupService;
 
+    /**
+     * 每页用户组条数
+     */
+    private static int perPage = 5;
+
     @RequestMapping("/add")
     public void addGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
         Message message = new Message(-1, "");
         // TODO 检测admin登录未登录禁止操作
-
 
         if (group.getName() == null || group.getCompany() == null || group.getRemark() == null) {
             message.setData("参数不全");
@@ -52,12 +59,41 @@ public class GroupController  {
         }
     }
 
+    @RequestMapping("/get")
+    public void getGroup(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
+
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("page", (page - 1) * perPage);
+        condition.put("perPage", perPage);
+        List<Group> groups = groupService.getGroup(condition);
+        List<Map<String, Object>> groupJson = new ArrayList<Map<String, Object>>();
+        for (Group group : groups) {
+            List<User> users = groupService.getUserListByGroup(group.getId());
+            group.setUsers(users);
+            groupJson.add(GroupDto.formatGroupJson(group));
+        }
+
+        // 获取group总数
+        int total = groupService.getGroupCount(condition);
+        int totalPage = (total % perPage) == 0 ? total / perPage : total / perPage + 1;
+        Map<String, Object> resMap = new HashMap<String, Object>();
+        resMap.put("groupList", groupJson);
+        resMap.put("totalPage", totalPage);
+
+        Message message = new Message();
+        message.setState(1);
+        message.setData(resMap);
+
+        ResponseUtil.setResponseJson(response, message);
+    }
+
     @RequestMapping("/update")
     public void updateGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
         Message message = new Message(-1, "");
         // TODO 检测admin登录未登录禁止操作
-
 
         if (group.getId() == 0 || group.getName() == null || group.getCompany() == null || group.getRemark() == null) {
             message.setData("参数不全");
@@ -85,6 +121,8 @@ public class GroupController  {
             ResponseUtil.setResponseJson(response, message);
         }
     }
+
+
 
 
 

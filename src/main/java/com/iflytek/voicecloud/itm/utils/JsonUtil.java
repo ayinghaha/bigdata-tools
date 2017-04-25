@@ -36,8 +36,18 @@ public class JsonUtil {
      * @return List
      * @throws Exception 异常
      */
-    public static List JsonToStringList(String json) throws Exception{
+    public static List JsonToStringList(String json) throws Exception {
         return mapper.readValue(json, List.class);
+    }
+
+    /**
+     * json串转换为map
+     * @param json      json串
+     * @return      map对象
+     * @throws Exception    异常
+     */
+    public static Map<String, Object> JsonToMap(String json) throws Exception {
+        return mapper.readValue(json, Map.class);
     }
 
     /**
