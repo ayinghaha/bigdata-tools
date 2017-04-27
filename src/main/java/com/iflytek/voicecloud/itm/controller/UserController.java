@@ -126,7 +126,7 @@ public class UserController {
         // 填充对象
         user.setNickName(user.getUserName());
         user.setPassword(password);
-        user.setPlainPassword(plainPassword);
+        // user.setPlainPassword(plainPassword);
         user.setPassword(password);
         user.setSalt(salt);
         user.setToken((String) resObj.get("token"));
@@ -141,6 +141,83 @@ public class UserController {
             message.setData("添加用户失败");
         }
         return message;
+    }
+
+    @RequestMapping("/resetPassword")
+    public void resetPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // TODO 检测admin用户登录状态
+
+        Message message = new Message(-1, "");
+        String userId = request.getParameter("userId");
+        if (userId == null) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        User user = userService.getUserById(Integer.parseInt(userId));
+        if (user == null) {
+            message.setData("用户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 生成新的密码并更新用户
+        String uuid = UUID.randomUUID().toString();
+        String plainPassword = uuid.substring(uuid.length()-8, uuid.length()).toLowerCase();
+        String password = StringUtil.generateMd5(plainPassword + user.getSalt());
+        user.setPlainPassword(plainPassword);
+        user.setPassword(password);
+
+        if(userService.UpdateByUser(user) > 0) {
+            message.setState(1);
+            Map<String, String> resMap = new HashMap<String, String>();
+            resMap.put("userName", user.getUserName());
+            resMap.put("password", user.getPlainPassword());
+            message.setData(resMap);
+        } else {
+            message.setData("更新失败");
+        }
+        ResponseUtil.setResponseJson(response, message);
+    }
+
+    @RequestMapping("/delete")
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // TODO 检测admin用户登录情况
+
+        Message message = new Message(-1, "");
+        String groupId = request.getParameter("groupId");
+        String userId = request.getParameter("userId");
+        if (groupId == null || userId == null) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        Group group = groupService.getGroupById(Integer.parseInt(groupId));
+        if (group == null) {
+            message.setData("删除用户所属客户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+        User user = userService.getUserById(Integer.parseInt(userId));
+        if (user == null) {
+            message.setData("删除用户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 删除用户连接对象
+        UserGroupLink userGroupLink = new UserGroupLink();
+        userGroupLink.setGroup(group);
+        userGroupLink.setUser(user);
+        int res = userService.deleteUserGroupLink(userGroupLink);
+        System.out.println(res);
+        message.setState(1);
+        message.setData("删除成功");
+        ResponseUtil.setResponseJson(response, message);
     }
 
 }

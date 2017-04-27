@@ -26,11 +26,51 @@ public class UserServiceImpl implements UserService {
         return userDao.userRegist(user);
     }
 
+    /**
+     * 通过用户主键获取id
+     * @param userId    用户主键
+     * @return      返回User对象
+     */
+    public User getUserById(int userId) {
+        return userDao.getUserById(userId);
+    }
+
+    /**
+     * 添加用户和客户关联
+     * @param userGroupLink     关联对象
+     * @return      生成主键
+     */
     public int addUserGroupLink(UserGroupLink userGroupLink) {
         return userDao.addUserGroupLink(userGroupLink);
     }
 
+    /**
+     * 通过用户名获取用户对象 (用户名唯一)
+     * @param name      检测用户名
+     * @return      用户对象
+     */
     public User getUserByName(String name) {
         return userDao.getUserByName(name);
+    }
+
+    /**
+     * 删除用户和客户连接
+     * @param userGroupLink     用户、客户连接对象
+     * @return      是否成功
+     */
+    public int deleteUserGroupLink(UserGroupLink userGroupLink) {
+        return userDao.deleteUserGroupLink(userGroupLink);
+    }
+
+    /**
+     * 更新User对象
+     * @param user      user对象
+     * @return      是否成功
+     */
+    public int UpdateByUser(User user) {
+        if (user.getId() == 0) {
+            return -1;
+        }
+        return userDao.UpdateByUser(user);
     }
 }

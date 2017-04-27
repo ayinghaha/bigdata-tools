@@ -37,4 +37,18 @@ public interface UserDao {
      */
     User getUserByName(String name);
 
+    /**
+     * 删除用户和客户连接
+     * @param userGroupLink     用户、客户连接对象
+     * @return      是否成功
+     */
+    int deleteUserGroupLink(UserGroupLink userGroupLink);
+
+    /**
+     * 更新User对象
+     * @param user      user对象
+     * @return      是否成功
+     */
+    int UpdateByUser(User user);
+
 }

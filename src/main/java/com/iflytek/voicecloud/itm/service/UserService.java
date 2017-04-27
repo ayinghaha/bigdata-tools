@@ -11,8 +11,14 @@ public interface UserService {
 
     int userRegist(User user);
 
+    User getUserById(int userId);
+
     int addUserGroupLink(UserGroupLink userGroupLink);
 
     User getUserByName(String name);
+
+    int deleteUserGroupLink(UserGroupLink userGroupLink);
+
+    int UpdateByUser(User user);
 
 }

@@ -81,6 +81,8 @@ public class GroupController  {
         Map<String, Object> resMap = new HashMap<String, Object>();
         resMap.put("groupList", groupJson);
         resMap.put("totalPage", totalPage);
+        resMap.put("perPage", perPage);
+        resMap.put("total", total);
 
         Message message = new Message();
         message.setState(1);

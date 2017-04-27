@@ -19,6 +19,8 @@ public class GroupDto {
 
         resMap.put("id", group.getId());
         resMap.put("name", group.getName());
+        resMap.put("company", group.getCompany());
+        resMap.put("remark", group.getRemark());
         resMap.put("itmID", group.getItmID());
 
         List<User> users = group.getUsers();

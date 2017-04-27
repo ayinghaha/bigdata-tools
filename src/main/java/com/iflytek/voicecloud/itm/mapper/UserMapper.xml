@@ -34,4 +34,21 @@
         insert into t_user_group_link values(null, #{user.id}, #{group.id}, 0, #{remark}, null)
     </insert>
 
+    <delete id="deleteUserGroupLink" parameterType="UserGroupLink">
+        delete from t_user_group_link where user_id=#{user.id} and group_id=#{group.id}
+    </delete>
+
+    <update id="UpdateByUser" parameterType="User">
+        update t_user
+        <set>
+            <if test="plainPassword != null">
+                plain_password = #{plainPassword},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
 </mapper>
