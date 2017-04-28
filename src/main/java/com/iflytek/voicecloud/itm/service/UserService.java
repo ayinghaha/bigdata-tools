@@ -21,6 +21,8 @@ public interface UserService {
 
     int deleteUserGroupLink(UserGroupLink userGroupLink);
 
+    int updateUserGroupLink(UserGroupLink userGroupLink);
+
     int UpdateByUser(User user);
 
     UserGroupLink getUserGroupLink(Map<String, Object> condition);

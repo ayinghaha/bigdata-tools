@@ -237,6 +237,50 @@ public class UserController {
         ResponseUtil.setResponseJson(response, message);
     }
 
+    @RequestMapping("/setUserPrivileges")
+    public void setUserPrivileges(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        Message message = new Message(-1, "");
+        String userId = request.getParameter("userId");
+        String groupId = request.getParameter("groupId");
+        String privilege = request.getParameter("privilege");
+        if (userId == null || groupId == null || privilege == null) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("userId", userId);
+        condition.put("groupId", groupId);
+        UserGroupLink userGroupLink = userService.getUserGroupLink(condition);
+        if (userGroupLink == null) {
+            message.setData("用户与客户连接不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        User user = userService.getUserById(Integer.parseInt(userId));
+        Group group = groupService.getGroupById(Integer.parseInt(groupId));
+        if (user == null || group == null) {
+            message.setData("用户或客户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        UserGroupLink groupLink = new UserGroupLink();
+        groupLink.setUser(user);
+        groupLink.setGroup(group);
+        groupLink.setPrivilege(Integer.parseInt(privilege));
+        if (userService.updateUserGroupLink(groupLink) > 0) {
+            message.setState(1);
+            message.setData("更新成功");
+        } else {
+            message.setData("更新失败");
+        }
+        ResponseUtil.setResponseJson(response, message);
+    }
+
     @RequestMapping("/delete")
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

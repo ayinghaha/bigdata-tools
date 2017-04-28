@@ -47,6 +47,13 @@ public interface UserDao {
     UserGroupLink getUserGroupLink(Map<String, Object> condition);
 
     /**
+     * 更新用户连接对象
+     * @param userGroupLink     连接对象
+     * @return      是否成功
+     */
+    int updateUserGroupLink(UserGroupLink userGroupLink);
+
+    /**
      * 删除用户和客户连接
      * @param userGroupLink     用户、客户连接对象
      * @return      是否成功

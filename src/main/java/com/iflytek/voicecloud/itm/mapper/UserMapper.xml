@@ -51,6 +51,16 @@
     <insert id="addUserGroupLink" parameterType="UserGroupLink" keyProperty="id" useGeneratedKeys="true">
         insert into t_user_group_link values(null, #{user.id}, #{group.id}, 0, #{remark}, null)
     </insert>
+    
+    <update id="updateUserGroupLink" parameterType="UserGroupLink">
+        update t_user_group_link
+        <set>
+            <if test="privilege != null">
+                privilege = #{privilege}
+            </if>
+        </set>
+        where user_id = #{user.id} AND group_id = #{group.id}
+    </update>
 
     <delete id="deleteUserGroupLink" parameterType="UserGroupLink">
         delete from t_user_group_link where user_id=#{user.id} and group_id=#{group.id}

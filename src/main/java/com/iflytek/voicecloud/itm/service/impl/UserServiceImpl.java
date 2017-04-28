@@ -65,6 +65,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 更新用户连接对象
+     * @param userGroupLink     连接对象
+     * @return      是否成功
+     */
+    public int updateUserGroupLink(UserGroupLink userGroupLink) {
+        return userDao.updateUserGroupLink(userGroupLink);
+    }
+
+    /**
      * 更新User对象
      * @param user      user对象
      * @return      是否成功
