@@ -24,6 +24,16 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
+    <resultMap id="GroupResult" type="Group">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="company" column="company"/>
+        <result property="remark" column="remark"/>
+        <result property="itmID" column="itm_id"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
     <insert id="userRegist" parameterType="User" keyProperty="id" useGeneratedKeys="true">
         insert into t_user values(null, #{userName}, #{password}, #{salt}, #{plainPassword}, #{token}, #{nickName}, null, #{lastLogin}, #{registTime}, #{updateTime})
     </insert>
@@ -78,5 +88,12 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="getGroupListByUser" parameterType="User" resultMap="GroupResult">
+        select * from t_group
+            join t_user_group_link
+            on t_group.id = t_user_group_link.group_id
+        where t_user_group_link.user_id = #{id}
+    </select>
 
 </mapper>

@@ -4,6 +4,7 @@ import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.entity.UserGroupLink;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,5 +67,12 @@ public interface UserDao {
      * @return      是否成功
      */
     int UpdateByUser(User user);
+
+    /**
+     * 通过User对象获取客户列表
+     * @param user      用户对象
+     * @return      group列表
+     */
+    List<Group> getGroupListByUser(User user);
 
 }

@@ -12,14 +12,11 @@ import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import com.iflytek.voicecloud.itm.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -312,8 +309,7 @@ public class UserController {
         UserGroupLink userGroupLink = new UserGroupLink();
         userGroupLink.setGroup(group);
         userGroupLink.setUser(user);
-        int res = userService.deleteUserGroupLink(userGroupLink);
-        System.out.println(res);
+        userService.deleteUserGroupLink(userGroupLink);
         message.setState(1);
         message.setData("删除成功");
         ResponseUtil.setResponseJson(response, message);
