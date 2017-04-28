@@ -4,6 +4,8 @@ import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.entity.UserGroupLink;
 
+import java.util.Map;
+
 /**
  * Created by jdshao on 2017/4/20
  */
@@ -20,5 +22,7 @@ public interface UserService {
     int deleteUserGroupLink(UserGroupLink userGroupLink);
 
     int UpdateByUser(User user);
+
+    UserGroupLink getUserGroupLink(Map<String, Object> condition);
 
 }

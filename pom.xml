@@ -179,6 +179,7 @@
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.xml</include>
+                    <include>**/*.obj</include>
                 </includes>
             </resource>
             <resource>

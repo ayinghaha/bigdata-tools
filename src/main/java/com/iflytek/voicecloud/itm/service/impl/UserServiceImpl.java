@@ -8,6 +8,8 @@ import com.iflytek.voicecloud.itm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * Created by jdshao on 2017/4/20
  */
@@ -72,5 +74,14 @@ public class UserServiceImpl implements UserService {
             return -1;
         }
         return userDao.UpdateByUser(user);
+    }
+
+    /**
+     * 根据查询条件获取用户和客户连接对象
+     * @param condition     查询条件
+     * @return      连接对象
+     */
+    public UserGroupLink getUserGroupLink(Map<String, Object> condition) {
+        return userDao.getUserGroupLink(condition);
     }
 }

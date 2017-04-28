@@ -4,6 +4,8 @@ import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.entity.UserGroupLink;
 
+import java.util.Map;
+
 /**
  * Created by jdshao on 2017/4/17
  */
@@ -36,6 +38,13 @@ public interface UserDao {
      * @return      用户对象
      */
     User getUserByName(String name);
+
+    /**
+     * 根据查询条件获取用户和客户连接对象
+     * @param condition     查询条件
+     * @return      连接对象
+     */
+    UserGroupLink getUserGroupLink(Map<String, Object> condition);
 
     /**
      * 删除用户和客户连接

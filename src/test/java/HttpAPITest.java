@@ -20,7 +20,6 @@ import java.util.Map;
  */
 public class HttpAPITest {
 
-
     @Test
     public void testAPIRegist() throws Exception {
 

@@ -18,6 +18,12 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <resultMap id="UserGroupLinkResult" type="UserGroupLink">
+        <id property="id" column="id" />
+        <result property="privilege" column="privilege"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
     <insert id="userRegist" parameterType="User" keyProperty="id" useGeneratedKeys="true">
         insert into t_user values(null, #{userName}, #{password}, #{salt}, #{plainPassword}, #{token}, #{nickName}, null, #{lastLogin}, #{registTime}, #{updateTime})
     </insert>
@@ -28,6 +34,18 @@
 
     <select id="getUserByName" parameterType="String" resultMap="UserResult">
         select * from t_user where user_name = #{name}
+    </select>
+
+    <select id="getUserGroupLink" parameterType="Map" resultMap="UserGroupLinkResult">
+        select * from t_user_group_link
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="groupId != null">
+                AND group_id = #{groupId}
+            </if>
+        </where>
     </select>
 
     <insert id="addUserGroupLink" parameterType="UserGroupLink" keyProperty="id" useGeneratedKeys="true">
