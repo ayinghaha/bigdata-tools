@@ -72,6 +72,7 @@ public class AuthController {
             }
         }
         Map<String, Object> resMap = new HashMap<String, Object>();
+        resMap.put("userId", user.getId());
         resMap.put("groupList", groupResList);
 
         message.setState(1);

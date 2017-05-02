@@ -1,8 +1,10 @@
 package com.iflytek.voicecloud.itm.utils;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.iflytek.voicecloud.itm.dto.Message;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -10,7 +12,7 @@ import java.io.PrintWriter;
  */
 public class ResponseUtil {
 
-    public static void setResponseJson(HttpServletResponse response, Message message) throws Exception {
+    public static void setResponseJson(HttpServletResponse response, Message message) throws IOException, JsonParseException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
         PrintWriter out = response.getWriter();
