@@ -23,4 +23,6 @@ public interface GroupService {
     List<User> getUserListByGroup(int groupId);
 
     int getGroupCount(Map<String, Object> condition);
+
+    int deleteGroupById(int groupId);
 }

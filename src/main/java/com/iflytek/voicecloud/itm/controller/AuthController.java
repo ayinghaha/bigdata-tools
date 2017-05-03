@@ -18,10 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 用户登录
@@ -66,6 +63,12 @@ public class AuthController {
             return ;
         }
 
+        // 更新用户上次登录时间
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setLastLogin(new Date());
+        userService.UpdateByUser(updateUser);
+
         // 登录状态保存到session中
         request.getSession().setAttribute("userName", userName);
         List<Group> groups = userService.getGroupListByUser(user);
@@ -77,10 +80,40 @@ public class AuthController {
         }
         Map<String, Object> resMap = new HashMap<String, Object>();
         resMap.put("userId", user.getId());
+        resMap.put("userName", user.getUserName());
         resMap.put("groupList", groupResList);
 
         message.setState(1);
         message.setData(resMap);
+        ResponseUtil.setResponseJson(response, message);
+    }
+
+    @RequestMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response, User user) throws Exception {
+
+        Message message = new Message(-1, "");
+        if (user.getId() == 0 || user.getUserName() == null) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 检测用户是否存在
+        User detectUser = userService.getUserById(user.getId());
+        if (detectUser == null) {
+            message.setData("用户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        String userName = (String) request.getSession().getAttribute("userName");
+        if (userName == null) {
+            message.setData("用户未登录");
+        } else {
+            request.getSession().setAttribute("userName", "");
+            message.setState(1);
+            message.setData("用户退出成功");
+        }
         ResponseUtil.setResponseJson(response, message);
     }
 

@@ -64,4 +64,8 @@
             <where></where>
     </select>
 
+    <delete id="deleteGroupById" parameterType="Integer">
+        delete from t_group where id=#{id}
+    </delete>
+
 </mapper>

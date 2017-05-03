@@ -34,12 +34,14 @@ public class LoginFilter extends OncePerRequestFilter {
         if (doFilter) {
             // 执行过滤
             String user = (String) request.getSession().getAttribute("userName");
-            Message message = new Message(-2, "");
+            Message message = new Message();
             if (user == null) {
+                message.setState(-2);
                 message.setData("用户未登录");
             } else if(!user.equals("admin") && (URI.contains("user") || URI.contains("group") || URI.contains("setUserPrivileges"))) {
                 // 非admin用户不能访问 user 和 group 模块
-                message.setData("普通用户禁止访问次模块");
+                message.setState(-3);
+                message.setData("普通用户禁止访问此模块");
             } else {
                 // 条件满足放行
                 filterChain.doFilter(request, response);

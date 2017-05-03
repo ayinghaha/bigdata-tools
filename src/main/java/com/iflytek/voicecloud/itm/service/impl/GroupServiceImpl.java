@@ -72,4 +72,13 @@ public class GroupServiceImpl implements GroupService {
     public int getGroupCount(Map<String, Object> condition) {
         return groupDao.getGroupCount(condition);
     }
+
+    /**
+     * 根据客户id删除客户
+     * @param groupId       客户id
+     * @return      是否成功
+     */
+    public int deleteGroupById(int groupId) {
+        return groupDao.deleteGroupById(groupId);
+    }
 }

@@ -42,8 +42,6 @@ public class UserController {
     @RequestMapping("/add")
     public void addUser(HttpServletRequest request, HttpServletResponse response, User user) throws Exception{
 
-        // TODO　检测admin用户是否登录
-
         Message message = new Message(-1, "");
         String userGroupId = request.getParameter("userGroupId");
         if (user.getUserName() == null || user.getRemark() == null || userGroupId == null) {
@@ -91,8 +89,6 @@ public class UserController {
         userGroupLink.setRemark(user.getRemark());
         try {
             userService.addUserGroupLink(userGroupLink);
-            message.setState(1);
-            message.setData("添加用户成功");
         } catch (Exception e) {
             message.setData("此客户已绑定当前用户");
         }
@@ -118,18 +114,24 @@ public class UserController {
         param.put("passwd", password);
         param.put("operation", "regist");
         String RPCResult = HttpUtil.getRPCResponse(RPCUrl, param);
-        Map<String, Object> resObj = JsonUtil.JsonToMap(RPCResult);
-        // TODO test
-        resObj.put("ret", 0);resObj.put("token", "123456");
-        if ((Integer)resObj.get("ret") != 0) {
-            message.setData("远程接口错误:" + resObj.get("ret"));
-            return message;
+        Map<String, Object> resObj = new HashMap<String, Object>();
+        try {
+            resObj = JsonUtil.JsonToMap(RPCResult);
+            // TODO test
+            resObj.put("ret", 0);resObj.put("token", "123456");
+            if ((Integer)resObj.get("ret") != 0) {
+                message.setData("远程接口错误:" + resObj.get("ret"));
+                return message;
+            }
+        } catch (Exception e) {
+            resObj.put("ret", 0);resObj.put("token", "123456");
+            System.out.println("远程接口有问题");
         }
 
         // 填充对象
         user.setNickName(user.getUserName());
         user.setPassword(password);
-        // user.setPlainPassword(plainPassword);
+        user.setPlainPassword(plainPassword);
         user.setPassword(password);
         user.setSalt(salt);
         user.setToken((String) resObj.get("token"));
@@ -138,7 +140,10 @@ public class UserController {
         try {
             userService.userRegist(user);
             message.setState(1);
-            message.setData("添加用户成功");
+            HashMap<String, Object> resMap = new HashMap<String, Object>();
+            resMap.put("userName", user.getUserName());
+            resMap.put("password", user.getPlainPassword());
+            message.setData(resMap);
         } catch (Exception e) {
             e.printStackTrace();
             message.setData("添加用户失败");
@@ -148,8 +153,6 @@ public class UserController {
 
     @RequestMapping("/resetPassword")
     public void resetPassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        // TODO 检测admin用户登录状态
 
         Message message = new Message(-1, "");
         String userId = request.getParameter("userId");
@@ -185,10 +188,48 @@ public class UserController {
         ResponseUtil.setResponseJson(response, message);
     }
 
+    @RequestMapping("/setUserRemark")
+    public void setUserRemark(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        Message message = new Message(-1, "");
+        String groupId = request.getParameter("groupId");
+        String userId = request.getParameter("userId");
+        String remark = request.getParameter("remark");
+        if (groupId == null || userId == null || remark == null) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        Group group = groupService.getGroupById(Integer.parseInt(groupId));
+        if (group == null) {
+            message.setData("客户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+        User user = userService.getUserById(Integer.parseInt(userId));
+        if (user == null) {
+            message.setData("用户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 直接更新链接对象
+        UserGroupLink userGroupLink = new UserGroupLink();
+        userGroupLink.setUser(user);
+        userGroupLink.setGroup(group);
+        userGroupLink.setRemark(remark);
+        if (userService.updateUserGroupLink(userGroupLink) > 0) {
+            message.setState(1);
+            message.setData("更新成功");
+        } else {
+            message.setData("更新失败");
+        }
+        ResponseUtil.setResponseJson(response, message);
+    }
+
     @RequestMapping("/delete")
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        // TODO 检测admin用户登录情况
 
         Message message = new Message(-1, "");
         String groupId = request.getParameter("groupId");

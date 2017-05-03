@@ -65,8 +65,11 @@
     <update id="updateUserGroupLink" parameterType="UserGroupLink">
         update t_user_group_link
         <set>
-            <if test="privilege != null">
+            <if test="privilege != null and privilege != 0">
                 privilege = #{privilege}
+            </if>
+            <if test="remark != null">
+                remark = #{remark}
             </if>
         </set>
         where user_id = #{user.id} AND group_id = #{group.id}
@@ -84,6 +87,9 @@
             </if>
             <if test="password != null">
                 password = #{password},
+            </if>
+            <if test="lastLogin != null">
+                last_login = #{lastLogin}
             </if>
         </set>
         where id = #{id}

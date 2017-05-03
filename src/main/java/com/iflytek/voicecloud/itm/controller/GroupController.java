@@ -34,8 +34,6 @@ public class GroupController  {
     public void addGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
         Message message = new Message(-1, "");
-        // TODO 检测admin登录未登录禁止操作
-
         if (group.getName() == null || group.getCompany() == null || group.getRemark() == null) {
             message.setData("参数不全");
             ResponseUtil.setResponseJson(response, message);
@@ -95,8 +93,6 @@ public class GroupController  {
     public void updateGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
         Message message = new Message(-1, "");
-        // TODO 检测admin登录未登录禁止操作
-
         if (group.getId() == 0 || group.getName() == null || group.getCompany() == null || group.getRemark() == null) {
             message.setData("参数不全");
             ResponseUtil.setResponseJson(response, message);
@@ -124,7 +120,33 @@ public class GroupController  {
         }
     }
 
+    @RequestMapping("/delete")
+    public void deleteGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
+        Message message = new Message(-1, "");
+        if (group.getId() == 0) {
+            message.setData("参数不全");
+            ResponseUtil.setResponseJson(response, message);
+            return ;
+        }
+
+        // 检测客户是否存在
+        Group detectGroup = groupService.getGroupById(group.getId());
+        if (detectGroup == null) {
+            message.setData("删除客户不存在");
+            ResponseUtil.setResponseJson(response, message);
+            return;
+        }
+
+        // 删除客户 user_group_link 为casecade 会一并删除
+        if (groupService.deleteGroupById(detectGroup.getId()) > 0) {
+            message.setState(1);
+            message.setData("删除成功");
+        } else {
+            message.setData("删除失败");
+        }
+        ResponseUtil.setResponseJson(response, message);
+    }
 
 
 

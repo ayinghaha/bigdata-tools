@@ -53,4 +53,11 @@ public interface GroupDao {
      */
     int getGroupCount(Map<String, Object> condition);
 
+    /**
+     * 根据客户id删除客户
+     * @param groupId       客户id
+     * @return      是否成功
+     */
+    int deleteGroupById(int groupId);
+
 }
