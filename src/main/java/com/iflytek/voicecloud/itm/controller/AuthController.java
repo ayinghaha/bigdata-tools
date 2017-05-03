@@ -107,7 +107,7 @@ public class AuthController {
         }
 
         String userName = (String) request.getSession().getAttribute("userName");
-        if (userName == null) {
+        if (userName == null || userName.equals("")) {
             message.setData("用户未登录");
         } else {
             request.getSession().setAttribute("userName", "");
