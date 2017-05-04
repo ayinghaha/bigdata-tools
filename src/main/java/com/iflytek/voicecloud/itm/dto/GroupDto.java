@@ -24,13 +24,13 @@ public class GroupDto {
         resMap.put("itmID", group.getItmID());
 
         List<User> users = group.getUsers();
+        List<Map<String, Object>> userMaps = new ArrayList<Map<String, Object>>();
         if (users != null && users.size() > 0) {
-            List<Map<String, Object>> userMaps = new ArrayList<Map<String, Object>>();
             for (User user : users) {
                 userMaps.add(UserDto.formatUserJson(user));
             }
-            resMap.put("userList", userMaps);
         }
+        resMap.put("userList", userMaps);
 
         return resMap;
     }

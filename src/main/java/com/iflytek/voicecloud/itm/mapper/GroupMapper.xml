@@ -37,6 +37,9 @@
             <if test="id != null">
                 id = #{id}
             </if>
+            <if test="name != null and name != '' ">
+                name like CONCAT('%',#{name},'%')
+            </if>
         </where>
         order by regist_time desc
         <if test="page != null">

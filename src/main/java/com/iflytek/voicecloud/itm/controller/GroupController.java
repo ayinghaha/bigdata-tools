@@ -61,9 +61,11 @@ public class GroupController  {
     public void getGroup(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
+        String name = request.getParameter("name") != null ? request.getParameter("name") : "";
 
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("page", (page - 1) * perPage);
+        condition.put("name", name);
         condition.put("perPage", perPage);
         List<Group> groups = groupService.getGroup(condition);
         List<Map<String, Object>> groupJson = new ArrayList<Map<String, Object>>();

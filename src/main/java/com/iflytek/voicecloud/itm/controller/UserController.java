@@ -89,6 +89,8 @@ public class UserController {
         userGroupLink.setRemark(user.getRemark());
         try {
             userService.addUserGroupLink(userGroupLink);
+            message.setState(1);
+            message.setData("绑定客户成功");
         } catch (Exception e) {
             message.setData("此客户已绑定当前用户");
         }
