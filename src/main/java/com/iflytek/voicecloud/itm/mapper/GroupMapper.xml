@@ -64,7 +64,14 @@
 
     <select id="getGroupCount" parameterType="Map" resultType="Integer">
         select count(*) from t_group
-            <where></where>
+            <where>
+                <if test="id != null">
+                    id = #{id}
+                </if>
+                <if test="name != null and name != '' ">
+                    name like CONCAT('%',#{name},'%')
+                </if>
+            </where>
     </select>
 
     <delete id="deleteGroupById" parameterType="Integer">
