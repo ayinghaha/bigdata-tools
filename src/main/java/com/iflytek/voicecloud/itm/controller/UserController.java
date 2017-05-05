@@ -90,7 +90,10 @@ public class UserController {
         try {
             userService.addUserGroupLink(userGroupLink);
             message.setState(1);
-            message.setData("绑定客户成功");
+            Map<String, Object> resMap = new HashMap<String, Object>();
+            resMap.put("userName", user.getUserName());
+            resMap.put("password", user.getPlainPassword());
+            message.setData(resMap);
         } catch (Exception e) {
             message.setData("此客户已绑定当前用户");
         }
