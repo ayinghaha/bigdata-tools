@@ -8,6 +8,7 @@
         <id property="id" column="id" />
         <result property="userName" column="user_name"/>
         <result property="password" column="password"/>
+        <result property="plainPassword" column="plain_password"/>
         <result property="salt" column="salt"/>
         <result property="token" column="token"/>
         <result property="nickName" column="nick_name"/>

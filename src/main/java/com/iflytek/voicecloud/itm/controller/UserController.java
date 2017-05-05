@@ -79,7 +79,8 @@ public class UserController {
                 return ;
             }
         } else {
-            user.setId(detectUser.getId());
+            // 对象赋值
+            user = detectUser;
         }
 
         // 建立客户和用户联系
