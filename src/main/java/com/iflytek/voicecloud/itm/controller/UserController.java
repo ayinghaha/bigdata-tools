@@ -64,6 +64,7 @@ public class UserController {
         for (User tmpUser : users) {
             userNames.add(tmpUser.getUserName());
         }
+        // 判断客户是否已经绑定当前客户
         if (userNames.contains(user.getUserName())) {
             message.setData("此客户已绑定当前用户");
             ResponseUtil.setResponseJson(response, message);
@@ -79,8 +80,9 @@ public class UserController {
                 return ;
             }
         } else {
-            // 对象赋值
-            user = detectUser;
+            // 属性赋值
+            user.setId(detectUser.getId());
+            user.setPlainPassword(detectUser.getPlainPassword());
         }
 
         // 建立客户和用户联系
@@ -96,6 +98,7 @@ public class UserController {
             resMap.put("password", user.getPlainPassword());
             message.setData(resMap);
         } catch (Exception e) {
+            e.printStackTrace();
             message.setData("此客户已绑定当前用户");
         }
 
