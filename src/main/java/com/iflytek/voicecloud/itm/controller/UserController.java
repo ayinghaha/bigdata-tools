@@ -126,15 +126,13 @@ public class UserController {
         Map<String, Object> resObj = new HashMap<String, Object>();
         try {
             resObj = JsonUtil.JsonToMap(RPCResult);
-            // TODO test
-            resObj.put("ret", 0);resObj.put("token", "123456");
             if ((Integer)resObj.get("ret") != 0) {
                 message.setData("远程接口错误:" + resObj.get("ret"));
                 return message;
             }
         } catch (Exception e) {
-            resObj.put("ret", 0);resObj.put("token", "123456");
-            System.out.println("远程接口有问题");
+            message.setData("远程接口错误:" + resObj.get("ret"));
+            return message;
         }
 
         // 填充对象
@@ -143,7 +141,7 @@ public class UserController {
         user.setPlainPassword(plainPassword);
         user.setPassword(password);
         user.setSalt(salt);
-        user.setToken((String) resObj.get("token"));
+        user.setToken((String) resObj.get("data"));
         user.setRegistTime(new Date());
         // 保存用户
         try {

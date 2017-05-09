@@ -28,7 +28,7 @@ public class HttpAPITest {
         httpPost.setHeader("Contetn-type", "application/json; charset=utf8");
 
         Map<String, String> param = new HashMap<String, String>();
-        param.put("user", "jdshao");
+        param.put("user", " asdfasdfasdfasd");
         param.put("passwd", "iflytek");
         param.put("operation", "regist");
         // 构建消息实体
@@ -44,7 +44,8 @@ public class HttpAPITest {
             System.out.println(header.getName() + ":" + header.getValue());
         }
         String result = EntityUtils.toString(httpResponse.getEntity());
-        System.out.println(result);
+        Map<String, Object> resObj = JsonUtil.JsonToMap(result);
+        System.out.println(resObj);
     }
 
 }
