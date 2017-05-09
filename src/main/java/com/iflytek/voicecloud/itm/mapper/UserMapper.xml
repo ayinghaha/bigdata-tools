@@ -98,9 +98,11 @@
 
     <select id="getGroupListByUser" parameterType="User" resultMap="GroupResult">
         select * from t_group
-            join t_user_group_link
-            on t_group.id = t_user_group_link.group_id
-        where t_user_group_link.user_id = #{id}
+            <if test="userName != 'admin'">
+                join t_user_group_link
+                on t_group.id = t_user_group_link.group_id
+                where t_user_group_link.user_id = #{id}
+            </if>
     </select>
 
 </mapper>

@@ -79,6 +79,8 @@ public class AuthController {
             }
         }
         Map<String, Object> resMap = new HashMap<String, Object>();
+        int isAdmin = userName.equals("admin") ? 1 : -1;
+        resMap.put("isAdmin", isAdmin);
         resMap.put("userId", user.getId());
         resMap.put("userName", user.getUserName());
         resMap.put("groupList", groupResList);
