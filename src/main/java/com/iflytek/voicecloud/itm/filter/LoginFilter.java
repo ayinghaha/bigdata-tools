@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.filter;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
+import com.iflytek.voicecloud.itm.utils.StringUtil;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -14,6 +15,11 @@ import java.io.IOException;
  * 用户操作登录检测过滤器
  */
 public class LoginFilter extends OncePerRequestFilter {
+
+    /**
+     * nodejs 放行token盐
+     */
+    private static String salt = "itm-aac";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -28,6 +34,16 @@ public class LoginFilter extends OncePerRequestFilter {
             if (URI.contains(uri)) {
                 doFilter = true;
                 break;
+            }
+        }
+
+        // node.js 请求配置则放行
+        String serverId = request.getParameter("serverId");
+        String containerId = request.getParameter("containerID");
+        if (serverId != null && containerId != null && (URI.contains("tag") || URI.contains("variable"))) {
+            String token = StringUtil.generateMd5(containerId + salt);
+            if (token.equals(token)) {
+                filterChain.doFilter(request, response);
             }
         }
 

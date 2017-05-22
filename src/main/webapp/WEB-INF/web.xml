@@ -74,8 +74,7 @@
 
     <!-- session 过期时间 分钟 -->
     <session-config>
-        <session-timeout>1</session-timeout>
+        <session-timeout>15</session-timeout>
     </session-config>
-
 
 </web-app>

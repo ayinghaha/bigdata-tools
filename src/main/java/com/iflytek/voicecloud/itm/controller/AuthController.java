@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.*;
@@ -34,7 +35,7 @@ public class AuthController {
     GroupService groupService;
 
     @RequestMapping("/login")
-    public void userLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void userLogin(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) throws Exception {
 
         Message message = new Message(-1, "");
         String userName = request.getParameter("userName");
@@ -69,8 +70,7 @@ public class AuthController {
         updateUser.setLastLogin(new Date());
         userService.UpdateByUser(updateUser);
 
-        // 登录状态保存到session中
-        request.getSession().setAttribute("userName", userName);
+        // 获取所有及客户列表
         List<Group> groups = userService.getGroupListByUser(user);
         List<Map<String, Object>> groupResList = new ArrayList<Map<String, Object>>();
         if (groups.size() > 0) {
@@ -85,13 +85,18 @@ public class AuthController {
         resMap.put("userName", user.getUserName());
         resMap.put("groupList", groupResList);
 
+        // 登录状态保存到session中
+        httpSession.setAttribute("userName", userName);
+        httpSession.setAttribute("groups", groups);
+        httpSession.setAttribute("token", user.getToken());
+
         message.setState(1);
         message.setData(resMap);
         ResponseUtil.setResponseJson(response, message);
     }
 
     @RequestMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response, User user) throws Exception {
+    public void logout(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession, User user) throws Exception {
 
         Message message = new Message(-1, "");
         if (user.getId() == 0 || user.getUserName() == null) {
@@ -108,11 +113,11 @@ public class AuthController {
             return ;
         }
 
-        String userName = (String) request.getSession().getAttribute("userName");
+        String userName = (String) httpSession.getAttribute("userName");
         if (userName == null || userName.equals("")) {
             message.setData("用户未登录");
         } else {
-            request.getSession().setAttribute("userName", "");
+            httpSession.setAttribute("userName", "");
             message.setState(1);
             message.setData("用户退出成功");
         }

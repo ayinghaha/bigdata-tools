@@ -24,7 +24,10 @@
                 container_id = #{containerID}
             </if>
             <if test="itmID != null">
-                and itm_id = #{itmID}
+                and itm_id in
+                <foreach collection="itmID" item="itmId" index="index" open="(" close=")" separator=",">
+                    #{itmId}
+                </foreach>
             </if>
             <if test="name != null">
                 and name = #{name}

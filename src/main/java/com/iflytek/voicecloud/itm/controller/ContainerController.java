@@ -3,6 +3,7 @@ package com.iflytek.voicecloud.itm.controller;
 import com.iflytek.voicecloud.itm.dto.ContainerDto;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.entity.Container;
+import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.service.ContainerService;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class ContainerController {
     /**
      * container 类型
      */
-    public static final String[] containerType = {"Web", "iOS", "Android"};
+    public static final String[] containerType = {"Web网站数据", "Web推广数据", "iOS", "Android"};
 
     /**
      * 每页显示Container数量
@@ -50,7 +51,9 @@ public class ContainerController {
 
         // 检测相同itmid下名称和是否重复
         Map<String, Object> condition = new HashMap<String, Object>();
-        condition.put("itmID", container.getItmID());
+        List<String> itmIdList = new ArrayList<String>();
+        itmIdList.add(container.getItmID());
+        condition.put("itmID", itmIdList);
         condition.put("name", container.getName());
         List<Container> detectContainer = containerService.getContainerList(condition);
         if (detectContainer.size() > 0) {
@@ -78,15 +81,27 @@ public class ContainerController {
     public void getContainer(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String itmID = request.getParameter("itmID");
-        String containerID = request.getParameter("containerID");
         String keyWords = request.getParameter("keyWords");
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         Map<String, Object> condition = new HashMap<String, Object>();
-        condition.put("itmID", itmID);
-        condition.put("containerID", containerID);
         condition.put("keyWords", keyWords);
         condition.put("page", (page - 1) * this.perPage);
         condition.put("perPage", this.perPage);
+
+        // 检测登录用户，获取用户关联的客户并查询所有container
+        String userName = (String) request.getSession().getAttribute("userName");
+        if (userName != null && !userName.equals("admin")) {
+            List<Group> groups = (List<Group>) request.getSession().getAttribute("groups");
+            List<String> itmIdList = new ArrayList<String>();
+            for (Group group : groups) {
+                itmIdList.add(group.getItmID());
+            }
+            condition.put("itmID", itmIdList);
+        } else {
+            // 分析接口使用，查询某个container下的配置
+            String containerID = request.getParameter("containerID");
+            condition.put("containerID", containerID);
+        }
 
         List<Container> containers = containerService.getContainerList(condition);
         List<Map<String, Object>> resMapList = new ArrayList<Map<String, Object>>();
