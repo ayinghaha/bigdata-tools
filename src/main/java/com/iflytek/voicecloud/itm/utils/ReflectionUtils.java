@@ -37,7 +37,7 @@ public class ReflectionUtils {
             // 根据属性的类型设置基类值 通过paramName从request中获取值
             Object value = request.getParameter(paramName);
             if (value == null) {
-                throw new ParamLackException("请求参数不全");
+                throw new Exception("请求参数不全");
             }
             ReflectionUtils.setFieldValue(field, object, value);
         }

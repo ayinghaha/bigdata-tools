@@ -25,7 +25,7 @@ public class LoginFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         // 用户要过滤的URI
-        String[] filterURI = new String[] { "variable", "filter", "tag", "trigger", "container", "user", "group"};
+        String[] filterURI = new String[] { "variable", "filter", "tag", "trigger", "container", "user", "group", "statistic"};
         // 请求的URI
         String URI = request.getRequestURI();
         // 是否过滤
@@ -44,6 +44,7 @@ public class LoginFilter extends OncePerRequestFilter {
             String token = StringUtil.generateMd5(containerId + salt);
             if (token.equals(token)) {
                 filterChain.doFilter(request, response);
+                return ;
             }
         }
 

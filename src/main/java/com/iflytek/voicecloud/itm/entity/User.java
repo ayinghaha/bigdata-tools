@@ -33,11 +33,6 @@ public class User {
     private String plainPassword;
 
     /**
-     * 分析后台token
-     */
-    private String token;
-
-    /**
      * 用户昵称
      */
     private String nickName;
@@ -103,14 +98,6 @@ public class User {
 
     public void setPlainPassword(String plainPassword) {
         this.plainPassword = plainPassword;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public String getNickName() {

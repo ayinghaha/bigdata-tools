@@ -132,7 +132,7 @@ public class FilterController {
             message.setData("要删除的过滤器为不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!filter.getItmID().equals("jdshao")) {
+        } else if (!filter.getItmID().equals("test")) {
             message.setData("当前用户无权删除该变量");
             ResponseUtil.setResponseJson(response, message);
             return ;

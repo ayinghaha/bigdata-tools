@@ -3,10 +3,8 @@ package com.iflytek.voicecloud.itm.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.iflytek.voicecloud.itm.entity.VariableFilter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +56,11 @@ public class JsonUtil {
      */
     public static List<Map<String, Object>> JsonToFilterList(String json) throws Exception {
         CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, Map.class);
+        return mapper.readValue(json, listType);
+    }
+
+    public static List<String[]> JsonToStringArrayList(String json) throws Exception {
+        CollectionType listType = mapper.getTypeFactory().constructCollectionType(ArrayList.class, String[].class);
         return mapper.readValue(json, listType);
     }
 

@@ -5,6 +5,8 @@ import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.service.GroupService;
+import com.iflytek.voicecloud.itm.utils.HttpUtil;
+import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,11 @@ public class GroupController  {
 
     @Autowired
     GroupService groupService;
+
+    /**
+     * 远程接口url
+     */
+    private String RPCUrl = "http://zeus.xfyun.cn/insight/acl";
 
     /**
      * 每页用户组条数
@@ -46,7 +53,24 @@ public class GroupController  {
         group.setRegistTime(new Date());
         group.setUpdateTime(new Date());
 
+        // 调用远程接口获取token
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("user", group.getName());
+        param.put("passwd", "");
+        param.put("operation", "regist");
+        String RPCResult = HttpUtil.getRPCResponse(RPCUrl, param);
+        Map<String, Object> resObj = new HashMap<String, Object>();
         try {
+            resObj = JsonUtil.JsonToMap(RPCResult);
+            if ((Integer)resObj.get("ret") != 0) {
+                ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+            }
+        } catch (Exception e) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+        }
+
+        try {
+            group.setToken((String) resObj.get("data"));
             groupService.addGroup(group);
             message.setState(1);
             message.setData("添加成功");

@@ -81,4 +81,13 @@ public class GroupServiceImpl implements GroupService {
     public int deleteGroupById(int groupId) {
         return groupDao.deleteGroupById(groupId);
     }
+
+    /**
+     * 根据Container名称以及userid模糊查询得到关联的group并分页数据
+     * @param condition     查询条件
+     * @return  客户列表
+     */
+    public List<Group> getContainerConditionGroup(Map<String, Object> condition) {
+        return groupDao.getContainerConditionGroup(condition);
+    }
 }

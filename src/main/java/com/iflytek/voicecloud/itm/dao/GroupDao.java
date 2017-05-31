@@ -60,4 +60,11 @@ public interface GroupDao {
      */
     int deleteGroupById(int groupId);
 
+    /**
+     * 根据Container名称以及userid模糊查询得到关联的group并分页数据
+     * @param condition     查询条件
+     * @return  客户列表
+     */
+    List<Group> getContainerConditionGroup(Map<String, Object> condition);
+
 }

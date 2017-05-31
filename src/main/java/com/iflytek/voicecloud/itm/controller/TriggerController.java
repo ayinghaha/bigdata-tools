@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.TriggerDto;
+import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.TagTriggerLink;
 import com.iflytek.voicecloud.itm.entity.Trigger;
 import com.iflytek.voicecloud.itm.entity.VariableFilter;
@@ -116,7 +117,7 @@ public class TriggerController {
             for (Map<String, Object> filterInfo : filtersInfo) {
                 int variableId = (Integer) filterInfo.get("variableId");
                 Variable variable = variableService.getVariableById(variableId);
-                if (variable == null || !variable.getItmID().equals("jdshao")) {
+                if (variable == null || !variable.getItmID().equals(trigger.getItmID())) {
                     message.setData("绑定变量不存在或无权添加");
                     ResponseUtil.setResponseJson(response, message);
                     return;
@@ -204,11 +205,19 @@ public class TriggerController {
 
         int triggerId = Integer.parseInt(id);
         Trigger trigger = triggerService.getTriggerById(triggerId);
+
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
+
         if (trigger == null) {
             message.setData("要删除的触发器不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!trigger.getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(trigger.getItmID())) {
             message.setData("当前用户没有删除该触发器权限");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -265,11 +274,18 @@ public class TriggerController {
 
         // 检测trigger是否存在
         Trigger detectTrigger = triggerService.getTriggerById(trigger.getId());
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
+
         if (detectTrigger == null) {
             message.setData("要更新的触发器不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!detectTrigger.getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(detectTrigger.getItmID())) {
             message.setData("当前用户没有删除该触发器权限");
             ResponseUtil.setResponseJson(response, message);
             return ;

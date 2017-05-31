@@ -10,7 +10,6 @@
         <result property="password" column="password"/>
         <result property="plainPassword" column="plain_password"/>
         <result property="salt" column="salt"/>
-        <result property="token" column="token"/>
         <result property="nickName" column="nick_name"/>
         <result property="remark" column="remark"/>
         <result property="privilege" column="privilege"/>
@@ -31,12 +30,13 @@
         <result property="company" column="company"/>
         <result property="remark" column="remark"/>
         <result property="itmID" column="itm_id"/>
+        <result property="token" column="token"/>
         <result property="registTime" column="regist_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <insert id="userRegist" parameterType="User" keyProperty="id" useGeneratedKeys="true">
-        insert into t_user values(null, #{userName}, #{password}, #{salt}, #{plainPassword}, #{token}, #{nickName}, null, #{lastLogin}, #{registTime}, #{updateTime})
+        insert into t_user values(null, #{userName}, #{password}, #{salt}, #{plainPassword}, #{nickName}, null, #{lastLogin}, #{registTime}, #{updateTime})
     </insert>
 
     <select id="getUserById" parameterType="Integer" resultMap="UserResult">

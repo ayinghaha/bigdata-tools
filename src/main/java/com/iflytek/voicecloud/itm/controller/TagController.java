@@ -3,10 +3,7 @@ package com.iflytek.voicecloud.itm.controller;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.TagDto;
 import com.iflytek.voicecloud.itm.dto.TriggerDto;
-import com.iflytek.voicecloud.itm.entity.Tag;
-import com.iflytek.voicecloud.itm.entity.TagTriggerLink;
-import com.iflytek.voicecloud.itm.entity.Trigger;
-import com.iflytek.voicecloud.itm.entity.VariableFilter;
+import com.iflytek.voicecloud.itm.entity.*;
 import com.iflytek.voicecloud.itm.service.TagService;
 import com.iflytek.voicecloud.itm.service.TriggerService;
 import com.iflytek.voicecloud.itm.service.VariableFilterService;
@@ -73,7 +70,7 @@ public class TagController {
 
             for (Trigger trigger : triggers) {
                 // TODO 判断当前触发器是否属于当前用户
-                if (!trigger.getItmID().equals("jdshao")) {
+                if (!trigger.getItmID().equals(tag.getItmID())) {
                     message.setData("绑定触发器不属于当前用户");
                     ResponseUtil.setResponseJson(response, message);
                     return ;
@@ -146,11 +143,19 @@ public class TagController {
 
         int tagId = Integer.parseInt(id);
         Tag tag = tagService.getTagById(tagId);
+
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
+
         if (tag == null) {
             message.setData("要删除的标签不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!tag.getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(tag.getItmID())) {
             message.setData("当前登录用户没有删除当前标签权限");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -180,11 +185,19 @@ public class TagController {
         }
 
         Tag detectTag = tagService.getTagById(tag.getId());
+
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
+
         if (detectTag == null) {
             message.setData("要更新的标签不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!detectTag.getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(detectTag.getItmID())) {
             message.setData("当前用户没有权限操作");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -234,7 +247,7 @@ public class TagController {
                 List<TagTriggerLink> tagTriggerLinks = new ArrayList<TagTriggerLink>();
                 for (Trigger trigger : triggers) {
                     // TODO 判断当前触发器是否属于当前用户
-                    if (!trigger.getItmID().equals("jdshao")) {
+                    if (!trigger.getItmID().equals(tag.getItmID())) {
                         message.setData("绑定触发器不属于当前用户");
                         ResponseUtil.setResponseJson(response, message);
                         return ;

@@ -25,4 +25,6 @@ public interface GroupService {
     int getGroupCount(Map<String, Object> condition);
 
     int deleteGroupById(int groupId);
+
+    List<Group> getContainerConditionGroup(Map<String, Object> condition);
 }

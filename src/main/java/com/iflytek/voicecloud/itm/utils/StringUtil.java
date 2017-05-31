@@ -57,4 +57,13 @@ public class StringUtil {
         }
         return result;
     }
+
+    /**
+     * 检测字符串是否为null
+     * @param str  检测字符串
+     * @return boolean  true 字符串
+     */
+    public static boolean isStringNull(String str) {
+        return str == null || str.equals("");
+    }
 }

@@ -88,7 +88,6 @@ public class AuthController {
         // 登录状态保存到session中
         httpSession.setAttribute("userName", userName);
         httpSession.setAttribute("groups", groups);
-        httpSession.setAttribute("token", user.getToken());
 
         message.setState(1);
         message.setData(resMap);

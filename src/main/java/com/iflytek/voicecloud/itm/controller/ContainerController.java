@@ -4,7 +4,10 @@ import com.iflytek.voicecloud.itm.dto.ContainerDto;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.entity.Container;
 import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.User;
 import com.iflytek.voicecloud.itm.service.ContainerService;
+import com.iflytek.voicecloud.itm.service.GroupService;
+import com.iflytek.voicecloud.itm.service.UserService;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +26,12 @@ public class ContainerController {
 
     @Autowired
     ContainerService containerService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    GroupService groupService;
 
     /**
      * container 类型
@@ -80,48 +89,92 @@ public class ContainerController {
     @RequestMapping("/get")
     public void getContainer(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        String itmID = request.getParameter("itmID");
         String keyWords = request.getParameter("keyWords");
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
+        // 组装查询客户条件
         Map<String, Object> condition = new HashMap<String, Object>();
-        condition.put("keyWords", keyWords);
+        condition.put("name", keyWords);
         condition.put("page", (page - 1) * this.perPage);
         condition.put("perPage", this.perPage);
 
         // 检测登录用户，获取用户关联的客户并查询所有container
         String userName = (String) request.getSession().getAttribute("userName");
+        // 查询container条件
+        Map<String, Object> containerCondition = new HashMap<String, Object>();
         if (userName != null && !userName.equals("admin")) {
-            List<Group> groups = (List<Group>) request.getSession().getAttribute("groups");
-            List<String> itmIdList = new ArrayList<String>();
-            for (Group group : groups) {
-                itmIdList.add(group.getItmID());
-            }
-            condition.put("itmID", itmIdList);
+            // 获取当前条件下的关联
+            User user = userService.getUserByName(userName);
+            condition.put("userId", user.getId());
         } else {
             // 分析接口使用，查询某个container下的配置
             String containerID = request.getParameter("containerID");
-            condition.put("containerID", containerID);
+            containerCondition.put("containerID", containerID);
         }
 
-        List<Container> containers = containerService.getContainerList(condition);
+        // 关联客户
+        List<Group> associateGroups = groupService.getGroup(condition);
+        // 只取当前页的group作为条件
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : associateGroups) {
+            itmIdList.add(group.getItmID());
+        }
+        // 判断是否为空
+        if (itmIdList.size() > 0) {
+            containerCondition.put("itmID", itmIdList);
+        }
+
+        List<Container> containers = containerService.getContainerList(containerCondition);
         List<Map<String, Object>> resMapList = new ArrayList<Map<String, Object>>();
-        for (Container container : containers) {
-            resMapList.add(ContainerDto.formatContainerJson(container));
+        for (Group group : associateGroups) {
+            Map<String, Object> groupMap = new HashMap<String, Object>();
+            groupMap.put("groupId", group.getId());
+            groupMap.put("groupName", group.getName());
+            groupMap.put("itmID", group.getItmID());
+            List<Map<String, Object>> containerList = new ArrayList<Map<String, Object>>();
+            for (Container container : containers) {
+                if (container.getItmID().equals(group.getItmID())) {
+                    containerList.add(ContainerDto.formatContainerJson(container));
+                }
+            }
+            groupMap.put("containerList", containerList);
+
+            resMapList.add(groupMap);
         }
 
-        // 总数据条数
-        int total = containerService.countContainer(condition);
+        // 总条数
+        int total = groupService.getGroupCount(condition);
         // 总页数
         int totalPage = (total % this.perPage) == 0 ? total / this.perPage : total / this.perPage + 1;
 
         Map<String, Object> resData = new HashMap<String, Object>();
-        resData.put("containerList", containers);
+        resData.put("groupList", resMapList);
         resData.put("total", total);
         resData.put("totalPage", totalPage);
         resData.put("perPage", this.perPage);
 
-        Message message = new Message(1, resData);
-        ResponseUtil.setResponseJson(response, message);
+        ResponseUtil.setResponseJson(response, new Message(1, resData));
+    }
+
+    @RequestMapping("/glist")
+    public void getContainByGroup(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String itmID = request.getParameter("itmID");
+        if (itmID == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
+            return;
+        }
+
+        Map<String, Object> condition = new HashMap<String, Object>();
+        List<String> itmIdList = new ArrayList<String>();
+        itmIdList.add(itmID);
+        condition.put("itmID", itmIdList);
+
+        List<Container> containerList = containerService.getContainerList(condition);
+
+        Map<String, Object> resMap = new HashMap<String, Object>();
+        resMap.put("containerList", containerList);
+
+        ResponseUtil.setResponseJson(response, new Message(1, resMap));
     }
 
 }

@@ -30,6 +30,12 @@ public class Group {
      */
     private String itmID;
 
+
+    /**
+     * 分析后台token
+     */
+    private String token;
+
     /**
      * 记录时间
      */
@@ -94,6 +100,14 @@ public class Group {
 
     public void setItmID(String itmID) {
         this.itmID = itmID;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public Date getRegistTime() {

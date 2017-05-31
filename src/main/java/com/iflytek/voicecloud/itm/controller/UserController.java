@@ -34,11 +34,6 @@ public class UserController {
     @Autowired
     GroupService groupService;
 
-    /**
-     * 远程接口url
-     */
-    private String RPCUrl = "http://zeus.xfyun.cn/insight/acl";
-
     @RequestMapping("/add")
     public void addUser(HttpServletRequest request, HttpServletResponse response, User user) throws Exception{
 
@@ -117,31 +112,12 @@ public class UserController {
         String salt = StringUtil.generateSalt();
         String password = StringUtil.generateMd5(plainPassword+salt);
 
-        // 调用远程接口获取token
-        Map<String, String> param = new HashMap<String, String>();
-        param.put("user", user.getUserName());
-        param.put("passwd", password);
-        param.put("operation", "regist");
-        String RPCResult = HttpUtil.getRPCResponse(RPCUrl, param);
-        Map<String, Object> resObj = new HashMap<String, Object>();
-        try {
-            resObj = JsonUtil.JsonToMap(RPCResult);
-            if ((Integer)resObj.get("ret") != 0) {
-                message.setData("远程接口错误:" + resObj.get("ret"));
-                return message;
-            }
-        } catch (Exception e) {
-            message.setData("远程接口错误:" + resObj.get("ret"));
-            return message;
-        }
-
         // 填充对象
         user.setNickName(user.getUserName());
         user.setPassword(password);
         user.setPlainPassword(plainPassword);
         user.setPassword(password);
         user.setSalt(salt);
-        user.setToken((String) resObj.get("data"));
         user.setRegistTime(new Date());
         // 保存用户
         try {

@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.VariableDto;
+import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.entity.VariableFilter;
 import com.iflytek.voicecloud.itm.entity.variable.Variable;
 import com.iflytek.voicecloud.itm.service.VariableFilterService;
@@ -70,7 +71,7 @@ public class VariableController {
                 message.setData("插入失败");
             }
         } catch (Exception lackParamException) {
-            message.setData(lackParamException.getMessage());
+            message.setData("变量参数不全");
         } finally {
             ResponseUtil.setResponseJson(response, message);
         }
@@ -119,11 +120,19 @@ public class VariableController {
         int variableId = Integer.parseInt(id);
         // 获取要删除的变量
         Variable variable = variableService.getVariableById(variableId);
+
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
+
         if (variable == null) {
             message.setData("要删除的变量不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!variable.getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(variable.getItmID())) {
             message.setData("当前登录用户无权删除该变量");
             ResponseUtil.setResponseJson(response, message);
             return ;
@@ -172,11 +181,17 @@ public class VariableController {
         condition.put("itmID", variable.getItmID());
         condition.put("containerID", variable.getContainerID());
         List<Variable> detectVarList = variableService.getVariable(condition);
+        // 获取用户所有的itmID
+        List<Group> groupList = (List<Group>) request.getSession().getAttribute("groups");
+        List<String> itmIdList = new ArrayList<String>();
+        for (Group group : groupList) {
+            itmIdList.add(group.getItmID());
+        }
         if (detectVarList.size() == 0) {
             message.setData("更新变量不存在");
             ResponseUtil.setResponseJson(response, message);
             return ;
-        } else if (!detectVarList.get(0).getItmID().equals("jdshao")) {
+        } else if (!itmIdList.contains(detectVarList.get(0).getItmID())) {
             message.setData("当前登录用户无权删除该变量");
             ResponseUtil.setResponseJson(response, message);
             return ;
