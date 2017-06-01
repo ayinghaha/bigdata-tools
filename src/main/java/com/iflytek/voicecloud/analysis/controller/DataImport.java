@@ -42,12 +42,10 @@ public class DataImport {
     public void importRequest(HttpServletRequest request, HttpServletResponse response, @RequestParam("importFile") CommonsMultipartFile uploadFile) throws Exception {
 
         String taskType = request.getParameter("taskType");
-        String dataName = request.getParameter("dataName");
         String dataComment = request.getParameter("dataComment");
         String importDataType = request.getParameter("importDataType");
         String groupId = request.getParameter("groupId");
         if ( StringUtil.isStringNull(taskType) ||
-             StringUtil.isStringNull(dataName) ||
              StringUtil.isStringNull(dataComment) ||
              StringUtil.isStringNull(importDataType) ||
              StringUtil.isStringNull(groupId)) {
@@ -65,8 +63,8 @@ public class DataImport {
         String token = (String) innerMessage.getData();
 
         // 根据时间戳设置文件名
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String targetFileName = dateFormat.format(new Date()) + "_" + groupId;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        String targetFileName = dateFormat.format(new Date()) + "_" + groupId + ".txt";
 
         // 接收上传文件并存储至指定位置
         String targetPath = uploadPath + uploadFile.getOriginalFilename();
@@ -84,16 +82,17 @@ public class DataImport {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("task_type", taskType);
         paramMap.put("token", token);
-        paramMap.put("data_name", dataName);
+        paramMap.put("data_name", targetFileName);
         paramMap.put("data_comment", dataComment);
         paramMap.put("import_data_type", importDataType);
-        paramMap.put("import_ftp_path", "ftp://36.7.172.10/data/chaoqian_upload/" + targetFileName);
+        paramMap.put("import_ftp_path", "ftp://36.7.172.10/data/aac_upload/" + targetFileName);
         // 请求远程接口
         try {
             String requestRes = RpcApiUtil.getRemoteData(remoteURL, paramMap);
             Map<String, Object> resultMap = JsonUtil.JsonToMap(requestRes);
             ResponseUtil.setResponseJson(response, new Message(1, resultMap));
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             ResponseUtil.setResponseJson(response, new Message(-1, "请求远程接口失败"));
         }
     }
@@ -123,7 +122,7 @@ public class DataImport {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("task_type", taskType);
         paramMap.put("token", token);
-        paramMap.put("importId", importId);
+        paramMap.put("import_id", importId);
 
         // 请求远程接口
         try {
@@ -220,7 +219,7 @@ public class DataImport {
         // 从session中保存的客户列表中获取对应的token
         List<Group> groups = (List<Group>) request.getSession().getAttribute("groups");
         if (groups == null) {
-            return new Message(-1, "用户未登录");
+            return new Message(-2, "用户未登录");
         }
 
         Message message = new Message(-1, "客户id不存在");
