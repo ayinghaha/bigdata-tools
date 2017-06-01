@@ -164,6 +164,7 @@ public class DataImport {
             Map<String, Object> resultMap = JsonUtil.JsonToMap(requestRes);
             ResponseUtil.setResponseJson(response, new Message(1, resultMap));
         } catch (Exception e) {
+            e.printStackTrace();
             ResponseUtil.setResponseJson(response, new Message(-1, "请求远程接口失败"));
         }
     }

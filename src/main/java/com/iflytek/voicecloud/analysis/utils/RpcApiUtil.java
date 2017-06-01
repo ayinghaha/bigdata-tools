@@ -30,7 +30,7 @@ public class RpcApiUtil {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Contetn-type", "application/json; charset=utf8");
         StringEntity entity = new StringEntity(JsonUtil.ObjectToJson(reqParam), Charset.forName("UTF-8"));
-        System.out.println(JsonUtil.ObjectToJson(reqParam));
+//        System.out.println(JsonUtil.ObjectToJson(reqParam));
         entity.setContentEncoding("UTF-8");
         entity.setContentType("application/json");
         httpPost.setEntity(entity);
