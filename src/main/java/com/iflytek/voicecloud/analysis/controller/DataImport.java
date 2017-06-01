@@ -31,7 +31,7 @@ public class DataImport {
     /**
      * 服务器文件上传地址
      */
-    private static String uploadPath = "C:/Users/jdshao/Desktop/ITM/upload/";
+    private static String uploadPath = "/var/www/itm/upload/";
 
     /**
      * 远程数据接口
@@ -62,14 +62,14 @@ public class DataImport {
         }
         String token = (String) innerMessage.getData();
 
-        // 根据时间戳设置文件名
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-        String targetFileName = dateFormat.format(new Date()) + "_" + groupId + ".txt";
-
         // 接收上传文件并存储至指定位置
         String targetPath = uploadPath + uploadFile.getOriginalFilename();
         File targetFile = new File(targetPath);
         uploadFile.transferTo(targetFile);
+
+        // 根据时间戳设置文件名
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        String targetFileName = uploadFile.getOriginalFilename() + "_" + dateFormat.format(new Date()) + "_" + groupId + ".txt";
 
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);

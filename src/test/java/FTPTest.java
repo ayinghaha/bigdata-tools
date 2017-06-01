@@ -24,7 +24,7 @@ public class FTPTest {
             File srcFile = new File("C:/Users/jdshao/Desktop/ITM/bihe_test.txt");
             FileInputStream fis = new FileInputStream(srcFile);
             // 设置上传目录
-            ftpClient.changeWorkingDirectory("/data/acc_upload");
+            ftpClient.changeWorkingDirectory("/data/aac_upload");
             // 设置为被动模式
             ftpClient.enterLocalPassiveMode();
             /*ftpClient.setBufferSize(1024);
