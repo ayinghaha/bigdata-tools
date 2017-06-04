@@ -28,7 +28,7 @@ public class HttpAPITest {
         httpPost.setHeader("Contetn-type", "application/json; charset=utf8");
 
         Map<String, String> param = new HashMap<String, String>();
-        param.put("user", " asdfasdfasdfasd");
+        param.put("user", " 55555");
         param.put("passwd", "iflytek");
         param.put("operation", "regist");
         // 构建消息实体

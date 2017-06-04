@@ -68,8 +68,9 @@ public class DataImport {
         uploadFile.transferTo(targetFile);
 
         // 根据时间戳设置文件名
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-        String targetFileName = uploadFile.getOriginalFilename() + "_" + dateFormat.format(new Date()) + "_" + groupId + ".txt";
+        Date current = new Date();
+        String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + uploadFile.getOriginalFilename();
+        targetFileName = new String(targetFileName.getBytes("UTF-8"));
 
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);
@@ -226,8 +227,12 @@ public class DataImport {
         Message message = new Message(-1, "客户id不存在");
         for (Group group : groups) {
             if (group.getId() == groupId) {
-                message.setState(1);
-                message.setData(group.getToken());
+                if (group.getToken() == null || group.getToken().equals("")) {
+                    message.setData("客户token为空");
+                } else {
+                    message.setState(1);
+                    message.setData(group.getToken());
+                }
                 break;
             }
         }

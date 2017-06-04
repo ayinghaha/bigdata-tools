@@ -1,4 +1,7 @@
+import com.iflytek.voicecloud.analysis.utils.RpcApiUtil;
+import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
+import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -49,5 +52,24 @@ public class AnalysisAPITest {
         String result = EntityUtils.toString(httpResponse.getEntity());
     }
 
+    @Test
+    public void testDataList() throws Exception {
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("task_type", "datalist");
+        param.put("token", "9a25f8ec5743d18cc9d59ce793ca8d76");
+
+        HttpPost httpPost = new HttpPost("http://zeus.xfyun.cn/import/import");
+        httpPost.setHeader("Contetn-type", "application/json; charset=utf8");
+        StringEntity entity = new StringEntity(JsonUtil.ObjectToJson(param), Charset.forName("UTF-8"));
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
+        httpPost.setEntity(entity);
+        HttpResponse httpResponse = httpClient.execute(httpPost);
+        String result =  EntityUtils.toString(httpResponse.getEntity(), "utf-8");
+
+        System.out.println(result);
+    }
 
 }
