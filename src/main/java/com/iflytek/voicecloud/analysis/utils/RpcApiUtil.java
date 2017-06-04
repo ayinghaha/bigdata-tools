@@ -20,19 +20,6 @@ import java.util.Map;
  */
 public class RpcApiUtil {
 
-    private static ConnectionConfig connectionConfig = ConnectionConfig.custom().setBufferSize(4128).build();
-
-    private static ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new ConnectionKeepAliveStrategy() {
-        public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
-            return 20 * 1000; // tomcat默认keepAliveTimeout为20s
-        }
-    };
-
-    private static CloseableHttpClient httpClient = HttpClients.custom()
-            .setKeepAliveStrategy(connectionKeepAliveStrategy)
-            .setDefaultConnectionConfig(connectionConfig)
-            .build();
-
     /**
      * 请求远程数据接口
      * @param url       请求地址
@@ -40,6 +27,20 @@ public class RpcApiUtil {
      * @return          返回数据
      */
     public static String getRemoteData(String url, Map<String, Object> reqParam) throws Exception {
+
+        ConnectionConfig connectionConfig = ConnectionConfig.custom().setBufferSize(4128).build();
+
+        ConnectionKeepAliveStrategy connectionKeepAliveStrategy = new ConnectionKeepAliveStrategy() {
+            public long getKeepAliveDuration(HttpResponse httpResponse, HttpContext httpContext) {
+                return 20 * 1000; // tomcat默认keepAliveTimeout为20s
+            }
+        };
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setKeepAliveStrategy(connectionKeepAliveStrategy)
+                .setDefaultConnectionConfig(connectionConfig)
+                .build();
+
 
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Contetn-type", "application/json; charset=utf8");
@@ -49,20 +50,6 @@ public class RpcApiUtil {
         httpPost.setEntity(entity);
         HttpResponse httpResponse = httpClient.execute(httpPost);
         return EntityUtils.toString(httpResponse.getEntity(), "utf-8");
-    }
-
-    /**
-     * get方法请求
-     * @param url   请求地址
-     * @return      返回结果
-     * @throws Exception   异常
-     */
-    public static String getRemoteDataByGet(String url ) throws Exception {
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("Contetn-type", "application/json; charset=utf8");
-
-        HttpResponse httpResponse = httpClient.execute(httpGet);
-        return EntityUtils.toString(httpResponse.getEntity());
     }
 
 }
