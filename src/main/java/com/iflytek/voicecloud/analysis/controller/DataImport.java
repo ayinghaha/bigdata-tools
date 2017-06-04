@@ -70,7 +70,6 @@ public class DataImport {
         // 根据时间戳设置文件名
         Date current = new Date();
         String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + uploadFile.getOriginalFilename();
-        targetFileName = new String(targetFileName.getBytes("UTF-8"));
 
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);
@@ -93,7 +92,7 @@ public class DataImport {
             Map<String, Object> resultMap = JsonUtil.JsonToMap(requestRes);
             ResponseUtil.setResponseJson(response, new Message(1, resultMap));
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             ResponseUtil.setResponseJson(response, new Message(-1, "请求远程接口失败"));
         }
     }
