@@ -66,14 +66,23 @@ public class DataImport {
         }
         String token = (String) innerMessage.getData();
 
+        // 检测上传文件名
+        String fileName = uploadFile.getOriginalFilename();
+        String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String detectFileName = StringUtil.StringFilter(fileName);
+        if (!fileExtensionName.equals("txt") || !detectFileName.equals(fileName)) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "文件格式非txt或文件名不合法"));
+            return ;
+        }
+
         // 接收上传文件并存储至指定位置
-        String targetPath = uploadPath + uploadFile.getOriginalFilename();
+        String targetPath = uploadPath + fileName;
         File targetFile = new File(targetPath);
         uploadFile.transferTo(targetFile);
 
         // 根据时间戳设置文件名
         Date current = new Date();
-        String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + uploadFile.getOriginalFilename();
+        String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + fileName;
 
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);

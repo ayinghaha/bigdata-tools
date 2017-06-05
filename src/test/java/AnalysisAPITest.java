@@ -2,6 +2,7 @@ import com.iflytek.voicecloud.analysis.utils.RpcApiUtil;
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
+import com.iflytek.voicecloud.itm.utils.StringUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -70,6 +71,11 @@ public class AnalysisAPITest {
         String result =  EntityUtils.toString(httpResponse.getEntity(), "utf-8");
 
         System.out.println(result);
+    }
+
+    @Test
+    public void testString() throws Exception {
+        System.out.println(StringUtil.StringFilter("jdshao:1231/;"));
     }
 
 }

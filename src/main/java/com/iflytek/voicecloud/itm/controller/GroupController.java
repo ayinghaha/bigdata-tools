@@ -164,6 +164,21 @@ public class GroupController  {
             return;
         }
 
+        // 调用远程接口删除token
+        Map<String, String> param = new HashMap<String, String>();
+        param.put("user", detectGroup.getName());
+        param.put("operation", "delete");
+        String RPCResult = HttpUtil.getRPCResponse(RPCUrl, param);
+        Map<String, Object> resObj = new HashMap<String, Object>();
+        try {
+            resObj = JsonUtil.JsonToMap(RPCResult);
+            if ((Integer)resObj.get("ret") != 0) {
+                ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+            }
+        } catch (Exception e) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+        }
+
         // 删除客户 user_group_link 为casecade 会一并删除
         if (groupService.deleteGroupById(detectGroup.getId()) > 0) {
             message.setState(1);

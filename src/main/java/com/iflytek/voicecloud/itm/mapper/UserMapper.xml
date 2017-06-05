@@ -103,6 +103,7 @@
                 on t_group.id = t_user_group_link.group_id
                 where t_user_group_link.user_id = #{id}
             </if>
+        order by t_group.regist_time desc
     </select>
 
 </mapper>
