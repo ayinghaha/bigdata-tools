@@ -31,7 +31,8 @@ public class LoginFilter extends OncePerRequestFilter {
         // 是否过滤
         boolean doFilter = false;
         for (String uri : filterURI) {
-            if (URI.contains(uri)) {
+            // 非统计页面需要添加过滤条件
+            if (URI.contains(uri) && !URI.contains("statistic")) {
                 doFilter = true;
                 break;
             }
