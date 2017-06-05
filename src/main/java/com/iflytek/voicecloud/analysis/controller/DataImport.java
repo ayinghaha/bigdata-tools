@@ -37,7 +37,7 @@ public class DataImport {
     /**
      * 远程数据接口
      */
-    private static String remoteURL = "http://192.168.81.220:62222/import/import";
+    private static String remoteURL = "http://192.168.72.18:62222/import/import";
 //    private static String remoteURL = "http://zeus.xfyun.cn/import/import";
 
     @RequestMapping("/request")
