@@ -52,7 +52,7 @@ public class FTPUtil {
             ftpClient.enterLocalPassiveMode();
             // 设置编码
             ftpClient.setControlEncoding("UTF-8");
-            Boolean result = ftpClient.storeFile(targetName, fileInputStream);
+            Boolean result = ftpClient.storeFile(new String(targetName.getBytes("UTF-8"),"iso-8859-1"), fileInputStream);
             if (!result) {
                 return new Message(-1, "上传失败");
             } else {

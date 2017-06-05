@@ -82,9 +82,7 @@ public class DataImport {
         // 根据时间戳设置文件名
         Date current = new Date();
         String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + uploadFile.getOriginalFilename();
-        System.out.println("*********************************");
-        System.out.println(targetFileName);
-        System.out.println("*********************************");
+
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);
         if (uploadMessage.getState() != 1) {
