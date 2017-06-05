@@ -64,9 +64,11 @@ public class GroupController  {
             resObj = JsonUtil.JsonToMap(RPCResult);
             if ((Integer)resObj.get("ret") != 0) {
                 ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+                return ;
             }
         } catch (Exception e) {
             ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+            return ;
         }
 
         try {
