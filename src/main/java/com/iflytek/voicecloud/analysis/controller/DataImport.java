@@ -31,8 +31,8 @@ public class DataImport {
     /**
      * 服务器文件上传地址
      */
-    private static String uploadPath = "/var/www/itm/upload/";
-//    private static String uploadPath = "C:/Users/jdshao/Desktop/ITM/upload";
+//    private static String uploadPath = "/var/www/itm/upload/";
+    private static String uploadPath = "C:/Users/jdshao/Desktop/ITM/upload/";
 
     /**
      * 远程数据接口
@@ -67,22 +67,21 @@ public class DataImport {
         String token = (String) innerMessage.getData();
 
         // 检测上传文件名
-        String fileName = uploadFile.getOriginalFilename();
-        String fileExtensionName = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String detectFileName = StringUtil.StringFilter(fileName);
-        if (!fileExtensionName.equals("txt") || !detectFileName.equals(fileName)) {
+        String fileExtensionName = uploadFile.getOriginalFilename().substring(uploadFile.getOriginalFilename().lastIndexOf(".") + 1);
+        String detectFileName = StringUtil.StringFilter(uploadFile.getOriginalFilename());
+        if (!fileExtensionName.equals("txt") || !detectFileName.equals(uploadFile.getOriginalFilename())) {
             ResponseUtil.setResponseJson(response, new Message(-1, "文件格式非txt或文件名不合法"));
             return ;
         }
 
         // 接收上传文件并存储至指定位置
-        String targetPath = uploadPath + fileName;
+        String targetPath = uploadPath + uploadFile.getOriginalFilename();
         File targetFile = new File(targetPath);
         uploadFile.transferTo(targetFile);
 
         // 根据时间戳设置文件名
         Date current = new Date();
-        String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + fileName;
+        String targetFileName = String.valueOf(Long.toHexString(current.getTime()/1000)) + "_" + uploadFile.getOriginalFilename();
 
         // 上传至FTP服务器
         Message uploadMessage = FTPUtil.uploadFileToFTPServer(targetFile, targetFileName);
