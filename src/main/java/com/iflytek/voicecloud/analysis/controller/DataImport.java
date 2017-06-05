@@ -46,10 +46,12 @@ public class DataImport {
         String taskType = request.getParameter("taskType");
         String dataComment = request.getParameter("dataComment");
         String importDataType = request.getParameter("importDataType");
+        String dataName = request.getParameter("dataName");
         String groupId = request.getParameter("groupId");
         if ( StringUtil.isStringNull(taskType) ||
              StringUtil.isStringNull(dataComment) ||
              StringUtil.isStringNull(importDataType) ||
+             StringUtil.isStringNull(dataName) ||
              StringUtil.isStringNull(groupId)) {
             ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
             return ;
@@ -84,7 +86,7 @@ public class DataImport {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("task_type", taskType);
         paramMap.put("token", token);
-        paramMap.put("data_name", uploadFile.getOriginalFilename());
+        paramMap.put("data_name", dataName);
         paramMap.put("data_comment", dataComment);
         paramMap.put("import_data_type", importDataType);
         paramMap.put("import_ftp_path", "ftp://36.7.172.10/data/aac_upload/" + targetFileName);
