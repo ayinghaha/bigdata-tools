@@ -82,7 +82,7 @@ public class DataImport {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("task_type", taskType);
         paramMap.put("token", token);
-        paramMap.put("data_name", targetFileName);
+        paramMap.put("data_name", uploadFile.getOriginalFilename());
         paramMap.put("data_comment", dataComment);
         paramMap.put("import_data_type", importDataType);
         paramMap.put("import_ftp_path", "ftp://36.7.172.10/data/aac_upload/" + targetFileName);
