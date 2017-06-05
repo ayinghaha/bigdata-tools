@@ -51,7 +51,7 @@ public class AuthController {
         // 查询用户
         User user = userService.getUserByName(userName);
         if (user == null) {
-            message.setData("用户名不存在");
+            message.setData("用户名或密码错误");
             ResponseUtil.setResponseJson(response, message);
             return ;
         }
@@ -59,7 +59,7 @@ public class AuthController {
         // 验证密码是否正确
         String detectPassword = StringUtil.generateMd5(password + user.getSalt());
         if (!detectPassword.equals(user.getPassword())) {
-            message.setData("用户密码不正确");
+            message.setData("用户名或密码错误");
             ResponseUtil.setResponseJson(response, message);
             return ;
         }
