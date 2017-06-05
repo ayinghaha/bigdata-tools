@@ -31,8 +31,8 @@ public class DataImport {
     /**
      * 服务器文件上传地址
      */
-//    private static String uploadPath = "/var/www/itm/upload/";
-    private static String uploadPath = "C:/Users/jdshao/Desktop/ITM/upload/";
+    private static String uploadPath = "/var/www/itm/upload/";
+//    private static String uploadPath = "C:/Users/jdshao/Desktop/ITM/upload/";
 
     /**
      * 远程数据接口
