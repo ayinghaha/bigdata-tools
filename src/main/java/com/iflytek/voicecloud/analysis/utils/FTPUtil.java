@@ -50,6 +50,8 @@ public class FTPUtil {
             ftpClient.changeWorkingDirectory(targetPath);
             // 设置为被动模式
             ftpClient.enterLocalPassiveMode();
+            // 设置编码
+            ftpClient.setControlEncoding("UTF-8");
             Boolean result = ftpClient.storeFile(targetName, fileInputStream);
             if (!result) {
                 return new Message(-1, "上传失败");
