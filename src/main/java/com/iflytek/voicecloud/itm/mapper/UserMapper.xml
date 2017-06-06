@@ -80,6 +80,22 @@
         delete from t_user_group_link where user_id=#{user.id} and group_id=#{group.id}
     </delete>
 
+    <delete id="deleteUser" parameterType="User">
+        delete from t_user where id = #{id}
+    </delete>
+
+    <select id="countUserGroupLink" parameterType="Map" resultType="Integer">
+        select count(*) from t_user_group_link
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId}
+            </if>
+        </where>
+    </select>
+
     <update id="UpdateByUser" parameterType="User">
         update t_user
         <set>

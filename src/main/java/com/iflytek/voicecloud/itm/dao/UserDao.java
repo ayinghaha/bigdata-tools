@@ -75,4 +75,18 @@ public interface UserDao {
      */
     List<Group> getGroupListByUser(User user);
 
+    /**
+     * 统计用户客户绑定数
+     * @param condition     查询条件
+     * @return      绑定数量
+     */
+    int countUserGroupLink(Map<String, Object> condition);
+
+    /**
+     * 删除用户
+     * @param user      删除对象
+     * @return      是否成功
+     */
+    int deleteUser(User user);
+
 }

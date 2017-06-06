@@ -241,6 +241,15 @@ public class UserController {
         userGroupLink.setGroup(group);
         userGroupLink.setUser(user);
         userService.deleteUserGroupLink(userGroupLink);
+
+        // 检测当前的绑定的客户数，为空时直接删除用户
+        Map<String, Object> countCondition = new HashMap<String, Object>();
+        countCondition.put("userId", user.getId());
+        int userGroupLinkCount = userService.countUserGroupLink(countCondition);
+        if (userGroupLinkCount == 0) {
+            userService.deleteUser(user);
+        }
+
         message.setState(1);
         message.setData("删除成功");
         ResponseUtil.setResponseJson(response, message);

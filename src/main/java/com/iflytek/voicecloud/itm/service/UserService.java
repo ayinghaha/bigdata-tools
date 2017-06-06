@@ -30,4 +30,8 @@ public interface UserService {
 
     List<Group> getGroupListByUser(User user);
 
+    int countUserGroupLink(Map<String, Object> condition);
+
+    int deleteUser(User user);
+
 }

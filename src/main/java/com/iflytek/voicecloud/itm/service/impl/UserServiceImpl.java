@@ -103,4 +103,22 @@ public class UserServiceImpl implements UserService {
     public List<Group> getGroupListByUser(User user) {
         return userDao.getGroupListByUser(user);
     }
+
+    /**
+     * 统计用户客户绑定数
+     * @param condition     查询条件
+     * @return      绑定数量
+     */
+    public int countUserGroupLink(Map<String, Object> condition) {
+        return userDao.countUserGroupLink(condition);
+    }
+
+    /**
+     * 删除用户
+     * @param user      删除对象
+     * @return      是否成功
+     */
+    public int deleteUser(User user) {
+        return userDao.deleteUser(user);
+    }
 }
