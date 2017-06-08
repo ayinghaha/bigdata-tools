@@ -20,11 +20,10 @@ public interface GroupService {
 
     Group getGroupById(int groupId);
 
-    List<User> getUserListByGroup(int groupId);
+    List<User> getUserListByGroup(Map<String, Object> condition);
 
     int getGroupCount(Map<String, Object> condition);
 
     int deleteGroupById(int groupId);
 
-    List<Group> getContainerConditionGroup(Map<String, Object> condition);
 }

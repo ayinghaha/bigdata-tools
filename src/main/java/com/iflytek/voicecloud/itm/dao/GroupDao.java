@@ -41,10 +41,10 @@ public interface GroupDao {
 
     /**
      * 获取客户下的用户
-     * @param id     客户对象id
+     * @param condition     查询条件
      * @return     用户列表
      */
-    List<User> getUserListByGroup(int id);
+    List<User> getUserListByGroup(Map<String, Object> condition);
 
     /**
      * 获取用户组总数
@@ -59,12 +59,5 @@ public interface GroupDao {
      * @return      是否成功
      */
     int deleteGroupById(int groupId);
-
-    /**
-     * 根据Container名称以及userid模糊查询得到关联的group并分页数据
-     * @param condition     查询条件
-     * @return  客户列表
-     */
-    List<Group> getContainerConditionGroup(Map<String, Object> condition);
 
 }

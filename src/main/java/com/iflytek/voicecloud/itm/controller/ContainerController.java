@@ -93,7 +93,7 @@ public class ContainerController {
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         // 组装查询客户条件
         Map<String, Object> condition = new HashMap<String, Object>();
-        condition.put("name", keyWords);
+        condition.put("groupName", keyWords);
         condition.put("page", (page - 1) * this.perPage);
         condition.put("perPage", this.perPage);
 

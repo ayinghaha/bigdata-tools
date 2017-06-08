@@ -54,7 +54,9 @@ public class UserController {
         }
 
         // 获取客户下的所有用户 检测当前用户名是否存在
-        List<User> users = groupService.getUserListByGroup(group.getId());
+        Map<String, Object> condition = new HashMap<String, Object>();
+        condition.put("groupId", group.getId());
+        List<User> users = groupService.getUserListByGroup(condition);
         List<String> userNames = new ArrayList<String>();
         for (User tmpUser : users) {
             userNames.add(tmpUser.getUserName());

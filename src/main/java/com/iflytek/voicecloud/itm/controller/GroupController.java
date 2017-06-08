@@ -87,16 +87,23 @@ public class GroupController  {
     public void getGroup(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
+        String searchType = request.getParameter("searchType") != null ? request.getParameter("searchType") : "group";
         String name = request.getParameter("name") != null ? request.getParameter("name") : "";
 
         Map<String, Object> condition = new HashMap<String, Object>();
         condition.put("page", (page - 1) * perPage);
-        condition.put("name", name);
+        if (searchType.equals("user")) {
+            condition.put("userName", name);
+        } else {
+            condition.put("groupName", name);
+        }
         condition.put("perPage", perPage);
         List<Group> groups = groupService.getGroup(condition);
         List<Map<String, Object>> groupJson = new ArrayList<Map<String, Object>>();
+
         for (Group group : groups) {
-            List<User> users = groupService.getUserListByGroup(group.getId());
+            condition.put("groupId", group.getId());
+            List<User> users = groupService.getUserListByGroup(condition);
             group.setUsers(users);
             groupJson.add(GroupDto.formatGroupJson(group));
         }

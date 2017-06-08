@@ -45,6 +45,11 @@ public class VariableFilter {
     public String value;
 
     /**
+     * 内置变量类型
+     */
+    public String buildInType;
+
+    /**
      * 过滤器绑定的Trigger
      */
     public Trigger trigger;
@@ -59,13 +64,14 @@ public class VariableFilter {
      */
     public Date updateTime;
 
-    public VariableFilter(String itmID, String containerID, String name, Variable variable, String condition, String value, Trigger trigger, Date registTime, Date updateTime) {
+    public VariableFilter(String itmID, String containerID, String name, Variable variable, String condition, String value, String buildInType, Trigger trigger, Date registTime, Date updateTime) {
         this.itmID = itmID;
         this.containerID = containerID;
         this.name = name;
         this.variable = variable;
         this.condition = condition;
         this.value = value;
+        this.buildInType = buildInType;
         this.trigger = trigger;
         this.registTime = registTime;
         this.updateTime = updateTime;
@@ -128,6 +134,14 @@ public class VariableFilter {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getBuildInType() {
+        return buildInType;
+    }
+
+    public void setBuildInType(String buildInType) {
+        this.buildInType = buildInType;
     }
 
     public Date getRegistTime() {

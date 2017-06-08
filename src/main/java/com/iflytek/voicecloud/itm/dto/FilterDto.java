@@ -15,8 +15,15 @@ public class FilterDto {
         Map<String, Object> resMap = new HashMap<String, Object>();
 
         // 设置父类成员变量
-        resMap.put("variable", filter.getVariable().getName());
-        resMap.put("variableId", filter.getVariable().getId());
+        if (filter.getVariable() != null) {
+            resMap.put("variable", filter.getVariable().getName());
+            resMap.put("variableId", filter.getVariable().getId());
+        } else {
+            resMap.put("variable", "");
+            resMap.put("variableId", "");
+        }
+
+        resMap.put("buildInType", filter.getBuildInType());
         resMap.put("condition", filter.getCondition());
         resMap.put("value", filter.getValue());
 

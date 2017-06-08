@@ -51,6 +51,11 @@ public class TriggerController {
      */
     private static final String[] triggerTypeList = {"domReady", "windowReady", "pageView", "linkClick", "elementClick", "timer", "jsError", "historyChange", "formSubmit"};
 
+    /**
+     * 内置变量类型列表
+     */
+    private static final String[] buildInTypeList = {"ClickID", "ClickElement", "ClickClass", "ClickTarget", "ClickURL", "ClickText","FormElement", "FormClass", "FormID", "FormTarget", "FormURL", "FormText","ErrorMessage", "ErrorURL", "ErrorLine", "ErrorDebug","PageHostname", "PagePath", "PageURL", "PageReferrer"};
+
     @RequestMapping("/add")
     public void addTrigger(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -96,15 +101,12 @@ public class TriggerController {
     @RequestMapping("combineAddUpdate")
     public void addTriggerWithFilter(HttpServletRequest request, HttpServletResponse response, Trigger trigger) throws Exception {
 
-        Message message = new Message(-1, "");
         List<String> asTypeList = Arrays.asList(triggerTypeList);
         if (trigger.getItmID() == null || trigger.getContainerID() == null || trigger.getName() == null || trigger.getType() == null || !asTypeList.contains(trigger.getType())) {
-            message.setData("参数不全或参数类型不正确");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全或参数类型不正确"));
             return ;
         } else if (trigger.getType().equals("timer") && trigger.getDelay() == null) {
-            message.setData("type为timer时delay参数不能为空");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "type为timer时delay参数不能为空"));
             return ;
         }
 
@@ -114,36 +116,46 @@ public class TriggerController {
         if (filterList != null) {
             List<Map<String, Object>> filtersInfo = JsonUtil.JsonToFilterList(filterList);
             List<String> conditionTypes = Arrays.asList(FilterController.conditionTypesList);
+            List<String> buildInTypes = Arrays.asList(buildInTypeList);
+            // filterInfo {"condition":"equals","value":"123","variableId":123,"buildInType":"ClickElement"}
             for (Map<String, Object> filterInfo : filtersInfo) {
+                // filter 可以添加自定义变量或内置变量, 不能同时为空，自定义变量条件优先
                 int variableId = (Integer) filterInfo.get("variableId");
-                Variable variable = variableService.getVariableById(variableId);
-                if (variable == null || !variable.getItmID().equals(trigger.getItmID())) {
-                    message.setData("绑定变量不存在或无权添加");
-                    ResponseUtil.setResponseJson(response, message);
+                String buildInType = (String) filterInfo.get("buildInType");
+                if (variableId == 0 && buildInType == null) {
+                    ResponseUtil.setResponseJson(response, new Message(-1, "自定变量和内置变量同时为空"));
                     return;
-                } else {
-                    // 生成对象列表
-                    String condition = (String) filterInfo.get("condition");
-                    if (!conditionTypes.contains(condition)) {
-                        message.setData("绑定过滤器类型不正确");
-                        ResponseUtil.setResponseJson(response, message);
-                        return;
-                    }
-                    String value = (String) filterInfo.get("value");
-                    variableFilters.add(new VariableFilter(trigger.getItmID(), trigger.getContainerID(), "", variable, condition, value, null, new Date(), new Date()));
                 }
+
+                Variable variable = variableId > 0 ? variableService.getVariableById(variableId) : null;
+                if (variable != null && !variable.getItmID().equals(trigger.getItmID())) {
+                    ResponseUtil.setResponseJson(response, new Message(-1, "绑定变量不存在或无权添加"));
+                    return;
+                } else if (buildInType != null && !buildInTypes.contains(buildInType)) {
+                    ResponseUtil.setResponseJson(response, new Message(-1, "内置变量类型不正确"));
+                    return;
+                }
+
+                // 生成对象列表
+                String condition = (String) filterInfo.get("condition");
+                if (!conditionTypes.contains(condition)) {
+                    ResponseUtil.setResponseJson(response, new Message(-1, "绑定过滤器类型不正确"));
+                    return;
+                }
+                String value = (String) filterInfo.get("value");
+                variableFilters.add(new VariableFilter(trigger.getItmID(), trigger.getContainerID(), "", variable, condition, value, buildInType, trigger, new Date(), new Date() ));
             }
         }
 
         // 检测 trigger 是否重名
         if (detectTriggerName(trigger)) {
-            message.setData("相同Container下触发器name相同");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "相同Container下触发器name相同"));
             return;
         }
 
         // trigger id 不为空为更新的情况
         int resKey ;
+        Message message = new Message(-1, "");
         if (trigger.getId() > 0) {
             resKey = triggerService.updateTrigger(trigger);
             // 将原trigger下的filter全部删除

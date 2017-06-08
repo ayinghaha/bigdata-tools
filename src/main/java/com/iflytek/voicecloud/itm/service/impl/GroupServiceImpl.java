@@ -57,11 +57,11 @@ public class GroupServiceImpl implements GroupService {
 
     /**
      * 获取客户下的用户
-     * @param groupId     客户对象id
+     * @param condition     查询条件
      * @return     用户列表
      */
-    public List<User> getUserListByGroup(int groupId) {
-        return groupDao.getUserListByGroup(groupId);
+    public List<User> getUserListByGroup(Map<String, Object> condition) {
+        return groupDao.getUserListByGroup(condition);
     }
 
     /**
@@ -82,12 +82,4 @@ public class GroupServiceImpl implements GroupService {
         return groupDao.deleteGroupById(groupId);
     }
 
-    /**
-     * 根据Container名称以及userid模糊查询得到关联的group并分页数据
-     * @param condition     查询条件
-     * @return  客户列表
-     */
-    public List<Group> getContainerConditionGroup(Map<String, Object> condition) {
-        return groupDao.getContainerConditionGroup(condition);
-    }
 }

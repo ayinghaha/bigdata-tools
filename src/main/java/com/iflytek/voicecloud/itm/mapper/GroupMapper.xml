@@ -31,9 +31,8 @@
         insert into t_group values(null, #{name}, #{company}, #{remark}, #{itmID}, #{token}, #{registTime}, #{updateTime})
     </insert>
 
-    <select id="getGroup" parameterType="Map" resultMap="GroupResult">
-        select * from t_group g
-        <if test="userId != null">
+    <sql id="groupCondition">
+        <if test="userId != null or userName != null">
             join t_user_group_link ugl on g.id = ugl.group_id
             join t_user u on ugl.user_id = u.id
         </if>
@@ -44,14 +43,27 @@
             <if test="id != null">
                 g.id = #{id}
             </if>
-            <if test="name != null and name != '' ">
-                and g.name like CONCAT('%',#{name},'%')
+            <if test="groupName != null and groupName != '' ">
+                and g.name like CONCAT('%',#{groupName},'%')
+            </if>
+            <if test="userName != null and userName != '' ">
+                and u.user_name like CONCAT('%',#{userName},'%')
             </if>
         </where>
+    </sql>
+
+    <select id="getGroup" parameterType="Map" resultMap="GroupResult">
+        select * from t_group g
+        <include refid="groupCondition" />
         order by g.regist_time desc
         <if test="page != null">
             limit #{page}, #{perPage}
         </if>
+    </select>
+
+    <select id="getGroupCount" parameterType="Map" resultType="Integer">
+        select count(*) from t_group g
+        <include refid="groupCondition" />
     </select>
 
     <select id="getGroupById" parameterType="Integer" resultMap="GroupResult">
@@ -62,28 +74,17 @@
         update t_group set name=#{name}, company=#{company}, remark=#{remark} where id=#{id}
     </update>
 
-    <select id="getUserListByGroup" parameterType="Integer" resultMap="UserResult">
-        select t_user.id, t_user.user_name, t_user_group_link.remark
-            from t_user join t_user_group_link
-            on t_user.id = t_user_group_link.user_id
-            where group_id = #{id}
-    </select>
-
-    <select id="getGroupCount" parameterType="Map" resultType="Integer">
-        select count(*) from t_group g
-        <if test="userId != null">
-            join t_user_group_link ugl on g.id = ugl.group_id
-            join t_user u on ugl.user_id = u.id
-        </if>
+    <select id="getUserListByGroup" parameterType="Map" resultMap="UserResult">
+        select u.id, u.user_name, ugl.remark
+            from t_user u
+            join t_user_group_link ugl
+                on u.id = ugl.user_id
         <where>
-            <if test="userId != null">
-                u.id = #{userId}
+            <if test="groupId != null">
+                ugl.group_id = #{groupId}
             </if>
-            <if test="id != null">
-                g.id = #{id}
-            </if>
-            <if test="name != null and name != '' ">
-                and g.name like CONCAT('%',#{name},'%')
+            <if test="userName != null">
+                and u.user_name like CONCAT('%',#{userName},'%')
             </if>
         </where>
     </select>
@@ -91,24 +92,5 @@
     <delete id="deleteGroupById" parameterType="Integer">
         delete from t_group where id=#{id}
     </delete>
-
-    <select id="getContainerConditionGroup" parameterType="Map" resultMap="GroupResult">
-        SELECT #{select} FROM t_group c
-            JOIN t_group g ON c.itm_id = g.itm_id
-            JOIN t_user_group_link ugl ON g.id = ugl.group_id
-            JOIN t_user u ON ugl.user_id = u.id
-        <where>
-            <if test="userId != null">
-                u.id = #{userId}
-            </if>
-            <if test="keyWords != null and name != '' ">
-                g.name like CONCAT('%',#{keyWords},'%')
-            </if>
-        </where>
-        order by g.regist_time desc
-        <if test="page != null">
-            limit #{page}, #{perPage}
-        </if>
-    </select>
 
 </mapper>
