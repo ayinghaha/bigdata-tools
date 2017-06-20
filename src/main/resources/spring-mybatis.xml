@@ -7,28 +7,52 @@
 						   http://www.springframework.org/schema/tx
 						   http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 						   http://www.springframework.org/schema/aop
-						   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+						   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!-- 配置数据源 -->
-    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
-        <property name="validationQuery" value="${jdbc.validationQuery}" />
-        <property name="initialSize" value="0" />
-        <property name="maxActive" value="20" />
-        <property name="maxIdle" value="20" />
-        <property name="minIdle" value="0" />
+    <!-- 数据源基类 -->
+    <bean name="baseDataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="initialSize" value="5" />
+        <property name="maxActive" value="100" />
+        <property name="minIdle" value="10" />
         <property name="maxWait" value="60000" />
-        <property name="testOnBorrow" value="false" />
-        <property name="testOnReturn" value="false" />
+        <property name="validationQuery" value="SELECT 'x'" />
+        <property name="testOnBorrow" value="true" />
+        <property name="testOnReturn" value="true" />
         <property name="testWhileIdle" value="true" />
         <property name="timeBetweenEvictionRunsMillis" value="60000" />
-        <property name="minEvictableIdleTimeMillis" value="25200000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
         <property name="removeAbandoned" value="true" />
         <property name="removeAbandonedTimeout" value="1800" />
         <property name="logAbandoned" value="true" />
         <property name="filters" value="mergeStat" />
+    </bean>
+
+    <!-- itm配置库 -->
+    <bean name="itmConfig" parent="baseDataSource" init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="validationQuery" value="${jdbc.validationQuery}" />
+    </bean>
+
+    <!-- itm分析数据库 -->
+    <bean name="itmAnalysis" parent="baseDataSource" init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc.analysis_url}" />
+        <property name="username" value="${jdbc.analysis_username}" />
+        <property name="password" value="${jdbc.analysis_password}" />
+        <property name="validationQuery" value="${jdbc.analysis_validationQuery}" />
+    </bean>
+
+    <!-- 数据源模块 -->
+    <bean id="dataSource" class="com.iflytek.voicecloud.itm.common.DynamicDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="itmConfig" value-ref="itmConfig"/>
+                <entry key="itmAnalysis" value-ref="itmAnalysis"/>
+            </map>
+        </property>
+        <!-- 默认数据源 -->
+        <property name="defaultTargetDataSource" ref="itmConfig"/>
     </bean>
 
     <!-- myBatis文件 -->
@@ -39,16 +63,18 @@
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
     </bean>
 
+    <!-- 需要扫描的dao -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.iflytek.voicecloud.itm.dao" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
 
-    <!-- 事务管理 -->
+    <!-- 事务管理 DataSourceTransactionManager  -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
+    <!-- 使用声明式事务 -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans>

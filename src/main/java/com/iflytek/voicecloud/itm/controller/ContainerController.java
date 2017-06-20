@@ -2,9 +2,9 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.ContainerDto;
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.Container;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.User;
+import com.iflytek.voicecloud.itm.entity.config.Container;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
 import com.iflytek.voicecloud.itm.service.ContainerService;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import com.iflytek.voicecloud.itm.service.UserService;
@@ -46,18 +46,15 @@ public class ContainerController {
     @RequestMapping("/add")
     public void addContainer(HttpServletRequest request, HttpServletResponse response, Container container) throws Exception {
 
-        Message message = new Message(-1, "");
         List<String> typeList = Arrays.asList(containerType);
         if (container.getItmID() == null || container.getType() == null || container.getName() == null ) {
-            message.setData("参数不全");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
             return ;
         } else if (!typeList.contains(container.getType())) {
-            message.setData("类型不正确");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "类型不正确"));
             return ;
         }
-
+        
         // 检测相同itmid下名称和是否重复
         Map<String, Object> condition = new HashMap<String, Object>();
         List<String> itmIdList = new ArrayList<String>();
@@ -66,8 +63,7 @@ public class ContainerController {
         condition.put("name", container.getName());
         List<Container> detectContainer = containerService.getContainerList(condition);
         if (detectContainer.size() > 0) {
-            message.setData("当前ITM账号下存在同名Container");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "当前ITM账号下存在同名Container"));
             return ;
         }
 
@@ -77,7 +73,9 @@ public class ContainerController {
         Long registTime = container.getRegistTime().getTime()/1000;
         container.setContainerID(String.valueOf(Long.toHexString(registTime)));
         int resKey = containerService.addContainer(container);
+        Message message = new Message();
         if (resKey < 0) {
+            message.setState(-1);
             message.setData("添加失败");
         } else {
             message.setState(1);

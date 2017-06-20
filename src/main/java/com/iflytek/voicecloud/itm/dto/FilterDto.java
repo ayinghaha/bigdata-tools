@@ -1,6 +1,6 @@
 package com.iflytek.voicecloud.itm.dto;
 
-import com.iflytek.voicecloud.itm.entity.VariableFilter;
+import com.iflytek.voicecloud.itm.entity.config.VariableFilter;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.voicecloud.analysis.utils.HttpTools;
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.config.Group;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 

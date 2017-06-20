@@ -3,7 +3,7 @@ package com.iflytek.voicecloud.analysis.controller;
 import com.iflytek.voicecloud.analysis.utils.FTPUtil;
 import com.iflytek.voicecloud.analysis.utils.RpcApiUtil;
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.Group;
+import com.iflytek.voicecloud.itm.entity.config.Group;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import com.iflytek.voicecloud.itm.utils.StringUtil;
@@ -15,7 +15,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +149,7 @@ public class DataImport {
     public void importAllDataQuery(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskType = request.getParameter("taskType");
         String groupId = request.getParameter("groupId");
+        int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
         if ( StringUtil.isStringNull(taskType) ||
                 StringUtil.isStringNull(groupId)) {
             ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
@@ -169,6 +169,7 @@ public class DataImport {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("task_type", taskType);
         paramMap.put("token", token);
+        paramMap.put("page", page);
 
         // 请求远程接口
         try {

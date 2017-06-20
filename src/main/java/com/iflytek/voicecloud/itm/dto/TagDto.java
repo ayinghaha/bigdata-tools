@@ -1,7 +1,7 @@
 package com.iflytek.voicecloud.itm.dto;
 
-import com.iflytek.voicecloud.itm.entity.Tag;
-import com.iflytek.voicecloud.itm.entity.Trigger;
+import com.iflytek.voicecloud.itm.entity.config.Tag;
+import com.iflytek.voicecloud.itm.entity.config.Trigger;
 
 import java.util.ArrayList;
 import java.util.HashMap;

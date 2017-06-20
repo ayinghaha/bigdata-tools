@@ -1,7 +1,7 @@
 package com.iflytek.voicecloud.itm.dto;
 
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.User;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;

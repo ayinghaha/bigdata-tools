@@ -1,4 +1,4 @@
-import com.iflytek.voicecloud.itm.entity.Privilege;
+import com.iflytek.voicecloud.itm.entity.config.Privilege;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import org.junit.Test;
 

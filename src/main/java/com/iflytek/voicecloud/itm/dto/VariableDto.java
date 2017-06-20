@@ -1,6 +1,6 @@
 package com.iflytek.voicecloud.itm.dto;
 
-import com.iflytek.voicecloud.itm.entity.variable.Variable;
+import com.iflytek.voicecloud.itm.entity.config.variable.Variable;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class VariableDto {
     /**
      * 反射对象路径
      */
-    private static final String reflectPath = "com.iflytek.voicecloud.itm.entity.variable.";
+    private static final String reflectPath = "com.iflytek.voicecloud.itm.entity.config.variable.";
 
     /**
      * 通过反射得到变量子类属性并放入Map中

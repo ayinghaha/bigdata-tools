@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.iflytek.voicecloud.itm.dao.TriggerDao">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.config.TriggerDao">
     <resultMap id="TriggerResult" type="Trigger" >
         <id property="id" column="id" />
         <result property="itmID" column="itm_id" />
@@ -11,7 +11,7 @@
         <result property="type" column="type"/>
         <result property="registTime" column="regist_time"/>
         <result property="updateTime" column="update_time"/>
-        <association property="variableFilters" column="id" select="com.iflytek.voicecloud.itm.dao.VariableFilterDao.getFilterByTriggerId"/>
+        <association property="variableFilters" column="id" select="com.iflytek.voicecloud.itm.dao.config.VariableFilterDao.getFilterByTriggerId"/>
     </resultMap>
 
     <resultMap id="TagTriggerLinkResult" type="TagTriggerLink">

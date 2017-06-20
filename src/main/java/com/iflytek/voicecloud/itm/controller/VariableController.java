@@ -2,9 +2,9 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.VariableDto;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.VariableFilter;
-import com.iflytek.voicecloud.itm.entity.variable.Variable;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.VariableFilter;
+import com.iflytek.voicecloud.itm.entity.config.variable.Variable;
 import com.iflytek.voicecloud.itm.service.VariableFilterService;
 import com.iflytek.voicecloud.itm.service.VariableService;
 import com.iflytek.voicecloud.itm.utils.ReflectionUtils;
@@ -38,7 +38,7 @@ public class VariableController {
     /**
      * 反射对象路径
      */
-    private static final String reflectPath = "com.iflytek.voicecloud.itm.entity.variable.";
+    private static final String reflectPath = "com.iflytek.voicecloud.itm.entity.config.variable.";
 
     @RequestMapping("/add")
     public void addVariable(HttpServletRequest request, HttpServletResponse response, Variable variable) throws Exception{

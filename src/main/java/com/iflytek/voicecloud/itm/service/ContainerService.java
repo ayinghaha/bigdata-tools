@@ -1,7 +1,6 @@
 package com.iflytek.voicecloud.itm.service;
 
-import com.iflytek.voicecloud.itm.entity.Container;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.iflytek.voicecloud.itm.entity.config.Container;
 
 import java.util.List;
 import java.util.Map;

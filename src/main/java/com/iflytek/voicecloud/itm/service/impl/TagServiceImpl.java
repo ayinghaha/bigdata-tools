@@ -1,9 +1,9 @@
 package com.iflytek.voicecloud.itm.service.impl;
 
-import com.iflytek.voicecloud.itm.dao.TagDao;
-import com.iflytek.voicecloud.itm.entity.Tag;
-import com.iflytek.voicecloud.itm.entity.TagTriggerLink;
-import com.iflytek.voicecloud.itm.entity.Trigger;
+import com.iflytek.voicecloud.itm.dao.config.TagDao;
+import com.iflytek.voicecloud.itm.entity.config.Tag;
+import com.iflytek.voicecloud.itm.entity.config.TagTriggerLink;
+import com.iflytek.voicecloud.itm.entity.config.Trigger;
 import com.iflytek.voicecloud.itm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

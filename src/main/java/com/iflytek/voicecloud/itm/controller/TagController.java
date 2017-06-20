@@ -2,11 +2,12 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.TagDto;
-import com.iflytek.voicecloud.itm.dto.TriggerDto;
-import com.iflytek.voicecloud.itm.entity.*;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.Tag;
+import com.iflytek.voicecloud.itm.entity.config.TagTriggerLink;
+import com.iflytek.voicecloud.itm.entity.config.Trigger;
 import com.iflytek.voicecloud.itm.service.TagService;
 import com.iflytek.voicecloud.itm.service.TriggerService;
-import com.iflytek.voicecloud.itm.service.VariableFilterService;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;

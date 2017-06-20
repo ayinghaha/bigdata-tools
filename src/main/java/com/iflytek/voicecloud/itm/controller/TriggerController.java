@@ -2,11 +2,11 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
 import com.iflytek.voicecloud.itm.dto.TriggerDto;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.TagTriggerLink;
-import com.iflytek.voicecloud.itm.entity.Trigger;
-import com.iflytek.voicecloud.itm.entity.VariableFilter;
-import com.iflytek.voicecloud.itm.entity.variable.Variable;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.TagTriggerLink;
+import com.iflytek.voicecloud.itm.entity.config.Trigger;
+import com.iflytek.voicecloud.itm.entity.config.VariableFilter;
+import com.iflytek.voicecloud.itm.entity.config.variable.Variable;
 import com.iflytek.voicecloud.itm.service.TriggerService;
 import com.iflytek.voicecloud.itm.service.VariableFilterService;
 import com.iflytek.voicecloud.itm.service.VariableService;

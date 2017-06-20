@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.analysis.OverAllDao">
+
+    <resultMap id="OverAllDailyResult" type="OverAllDaily">
+        <id property="id" column="id" />
+        <result property="containerId" column="container_id" />
+        <result property="webType" column="web_type"/>
+        <result property="pv" column="pv"/>
+        <result property="uv" column="uv"/>
+    </resultMap>
+
+    <select id="getDailyByid" parameterType="Integer" resultMap="OverAllDailyResult">
+        select * from t_overall_daily where id = #{id}
+    </select>
+
+
+
+</mapper>

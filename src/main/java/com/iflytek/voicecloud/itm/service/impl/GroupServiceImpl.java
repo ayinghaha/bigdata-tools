@@ -1,8 +1,8 @@
 package com.iflytek.voicecloud.itm.service.impl;
 
-import com.iflytek.voicecloud.itm.dao.GroupDao;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.User;
+import com.iflytek.voicecloud.itm.dao.config.GroupDao;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

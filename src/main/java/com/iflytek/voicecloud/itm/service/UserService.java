@@ -1,8 +1,8 @@
 package com.iflytek.voicecloud.itm.service;
 
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.User;
-import com.iflytek.voicecloud.itm.entity.UserGroupLink;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
+import com.iflytek.voicecloud.itm.entity.config.UserGroupLink;
 
 import java.util.List;
 import java.util.Map;

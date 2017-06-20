@@ -1,14 +1,11 @@
 package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.Privilege;
-import com.iflytek.voicecloud.itm.entity.User;
-import com.iflytek.voicecloud.itm.entity.UserGroupLink;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
+import com.iflytek.voicecloud.itm.entity.config.UserGroupLink;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import com.iflytek.voicecloud.itm.service.UserService;
-import com.iflytek.voicecloud.itm.utils.HttpUtil;
-import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import com.iflytek.voicecloud.itm.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.*;
 
 /**

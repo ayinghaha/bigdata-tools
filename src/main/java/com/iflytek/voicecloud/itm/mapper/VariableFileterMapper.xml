@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.iflytek.voicecloud.itm.dao.VariableFilterDao">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.config.VariableFilterDao">
 
     <resultMap type="VariableFilter" id="FilterResult" >
         <id property="id" column="id" />
@@ -14,7 +14,7 @@
         <result property="buildInType" column="build_in_type" />
         <result property="registTime" column="regist_time"/>
         <result property="updateTime" column="update_time"/>
-        <association property="variable" column="variable_id" select="com.iflytek.voicecloud.itm.dao.VariableDao.getVariableById" />
+        <association property="variable" column="variable_id" select="com.iflytek.voicecloud.itm.dao.config.VariableDao.getVariableById" />
     </resultMap>
 
     <insert id="addVariableFileter" parameterType="VariableFilter" useGeneratedKeys="true" keyProperty="id">

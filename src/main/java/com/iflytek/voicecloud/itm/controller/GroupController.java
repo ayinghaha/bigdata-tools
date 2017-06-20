@@ -2,8 +2,8 @@ package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.GroupDto;
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.Group;
-import com.iflytek.voicecloud.itm.entity.User;
+import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.config.User;
 import com.iflytek.voicecloud.itm.service.GroupService;
 import com.iflytek.voicecloud.itm.utils.HttpUtil;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.concurrent.locks.Condition;
 
 /**
  * 客户(用户组)
