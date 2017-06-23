@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iflytek.voicecloud.analysis.utils.HttpTools;
 import com.iflytek.voicecloud.itm.dto.Message;
-import com.iflytek.voicecloud.itm.entity.config.Group;
+import com.iflytek.voicecloud.itm.entity.Group;
 import com.iflytek.voicecloud.itm.utils.JsonUtil;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 
@@ -164,6 +164,55 @@ public class PopulationInsight {
 
         response.getWriter().write(result);
     }
+    @RequestMapping("/edit")
+    public void populationedit(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // 接收参数
+        // 接收参数
+        String query = request.getParameter("query");
+
+        int tagid = Integer.parseInt(request.getParameter("tagid"));
+         String token = "70F5E3AF1A6AD6B13375626DB5D0C123";
+        if (token == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "用户未登录"));
+            return;
+        }
+
+        // 构造参数
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("token", token);
+        param.put("ver", "1.0");
+
+        param.put("operation", "edit");
+        param.put("query", transAsJson(query));
+        param.put("tagid", tagid);
+
+        // 获取远程接口
+        String result = HttpTools.getRemoteData("http://192.168.72.124:8080/aac/insight/buildtag", param);
+        Map<String, Object> map = JsonUtil.JsonToMap(result);
+        Integer ret = (Integer) map.get("ret");
+        if (ret.equals(0)) {
+
+            Map<String, Object> param1 = new HashMap<String, Object>();
+            param1.put("token", token);
+            param1.put("ver", "1.0");
+            param1.put("operation", "insight");
+            param1.put("tagid", Integer.parseInt((String) map.get("data")));
+            param1.put("model", "0");
+
+            // 获取远程接口
+
+
+            HttpTools.getRemoteData("http://192.168.72.124:8080/aac/insight/buildtag", param1);
+
+
+        }
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write(result);
+    }
+
+
 
     //对应接口 2.3.7
     @RequestMapping("/rebuild")
@@ -217,6 +266,7 @@ public class PopulationInsight {
         param.put("ver", "1.0");
         param.put("operation", "export");
         param.put("tagid", tagid);
+        param.put("platform", "ad");
 
         // 获取远程接口
         String result = HttpTools.getRemoteData("http://192.168.72.124:8080/aac/insight/buildtag", param);
@@ -284,11 +334,20 @@ public class PopulationInsight {
     public void populationGetImportId(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // 接收参数
+        int userid = Integer.parseInt(request.getParameter("userid"));
+
+        List<Group> groups = (List<Group>) request.getSession().getAttribute("groups");
+        String token =null;
+        for(Group group:groups){
+            if(userid==group.getId())
+                token = group.getToken();
+
+        }
 
 
-        String token = "70F5E3AF1A6AD6B13375626DB5D0C123";
+       // String token = "70F5E3AF1A6AD6B13375626DB5D0C123";
         if (token == null) {
-            ResponseUtil.setResponseJson(response, new Message(-1, "用户未登录"));
+            ResponseUtil.setResponseJson(response, new Message(-1, "无此客户"));
             return;
         }
 
@@ -298,7 +357,7 @@ public class PopulationInsight {
         param.put("task_type", "datalist");
 
         // 获取远程接口
-        String result = HttpTools.getRemoteData("http://192.168.72.124:8080/import/import", param);
+        String result = HttpTools.getRemoteData("http://zeus.xfyun.cn/import/import", param);
         response.setCharacterEncoding("UTF-8");
 
         response.getWriter().write(result);
