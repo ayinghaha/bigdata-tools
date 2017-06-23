@@ -22,30 +22,30 @@ public class DataSourceSwichTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceSwichTest.class);
 
-    @Autowired
+    /*@Autowired
     // 注入
     private TagDao tagDao;
 
     @Autowired
-    private OverAllDao overAllDailyDao;
+    private OverAllDao overAllDailyDao;*/
 
     @Test
     public void findByItmConfig() {
 
-        DataSourceContextHolder.setDbType("itmConfig");
+        /*DataSourceContextHolder.setDbType("itmConfig");
         LOGGER.info("切换数据源至 itm-config");
 
         Tag tag = tagDao.getTagById(24);
-        System.out.println(tag);
+        System.out.println(tag);*/
     }
 
     @Test
     public void swichAnalysis() {
 
-        DataSourceContextHolder.setDbType("itmAnalysis");
+        /*DataSourceContextHolder.setDbType("itmAnalysis");
 
         OverAllData overAllDaily = overAllDailyDao.getDailyByid(526);
-        System.out.println(overAllDaily);
+        System.out.println(overAllDaily);*/
 
     }
 

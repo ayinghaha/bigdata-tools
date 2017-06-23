@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.dao.analysis;
 
 import com.iflytek.voicecloud.itm.entity.analysis.OverAllData;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,12 +11,17 @@ import java.util.Map;
 public interface OverAllDao {
 
     /**
-     * 获取overall日表数据
+     * 获取overall表 web数据一览
      * @param condition     查询条件
-     * @return
+     * @return  web数据一览
      */
-    OverAllData getOverViewData(Map<String, Object> condition);
+    OverAllData getOverviewData(Map<String, Object> condition);
 
-    OverAllData getOverAllWeekly(Map<String, Object> condition);
+    /**
+     * 获取web数据趋势图数据
+     * @param condition     查询条件
+     * @return      时间段内每日/每小时数据
+     */
+    List<OverAllData> getOverAllDataTrend(Map<String, Object> condition);
 
 }

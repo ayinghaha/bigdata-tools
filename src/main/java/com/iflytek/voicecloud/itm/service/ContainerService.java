@@ -16,4 +16,8 @@ public interface ContainerService {
 
     int countContainer(Map<String, Object> condition);
 
+    Container getContainerById(String containerId);
+
+    int deleteContainerById(String containerId);
+
 }

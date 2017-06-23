@@ -6,6 +6,7 @@ import com.iflytek.voicecloud.itm.service.WebDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,11 +16,23 @@ import java.util.Map;
 public class WebDataServiceImpl implements WebDataService {
 
     @Autowired
-    private OverAllDao overAllDailyDao;
+    private OverAllDao overAllDao;
 
-    public OverAllData getDailyData(Map<String, Object> condition) {
-        return null;
+    /**
+     * 获取overall表 web数据一览
+     * @param condition     查询条件
+     * @return  web数据一览
+     */
+    public OverAllData getOverAllData(Map<String, Object> condition) {
+        return overAllDao.getOverviewData(condition);
     }
 
-
+    /**
+     * 获取web数据趋势图数据
+     * @param condition     查询条件
+     * @return      时间段内每日/每小时数据
+     */
+    public List<OverAllData> getOverAllDataTrend(Map<String, Object> condition) {
+        return overAllDao.getOverAllDataTrend(condition);
+    }
 }

@@ -75,7 +75,8 @@ public class AnalysisAPITest {
 
     @Test
     public void testString() throws Exception {
-        System.out.println(StringUtil.StringFilter("jdshao:1231/;"));
+        String newPassword = "jdshaoniubi123";
+        System.out.println(newPassword.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$"));
     }
 
 }

@@ -25,6 +25,20 @@ public interface ContainerDao {
     List<Container> getContainerList(Map<String, Object> condition);
 
     /**
+     * 通过主键获取container
+     * @param containerId   主键id
+     * @return      container对象
+     */
+    Container getContainerById(String containerId);
+
+    /**
+     * 通过主键删除container
+     * @param containerId   主键id
+     * @return      是否成功
+     */
+    int deleteContainerById(String containerId);
+
+    /**
      * 根据条件获取Container数量
      * @param condition     条件Map
      * @return  查询条件下的Container数量

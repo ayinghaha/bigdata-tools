@@ -39,4 +39,22 @@ public class ContainerServiceImpl implements ContainerService {
     public int countContainer(Map<String, Object> condition) {
         return containerDao.countContainer(condition);
     }
+
+    /**
+     * 通过主键获取container
+     * @param containerId   主键id
+     * @return      container对象
+     */
+    public Container getContainerById(String containerId) {
+        return containerDao.getContainerById(containerId);
+    }
+
+    /**
+     * 通过主键删除container
+     * @param containerId   主键id
+     * @return      是否成功
+     */
+    public int deleteContainerById(String containerId) {
+        return containerDao.deleteContainerById(containerId);
+    }
 }

@@ -62,11 +62,12 @@ public class GroupController  {
         try {
             resObj = JsonUtil.JsonToMap(RPCResult);
             if ((Integer)resObj.get("ret") != 0) {
-                ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+                String errorMsg = (Integer) resObj.get("ret") == 20011 ? "用户名已存在" : resObj.get("ret") + "";
+                ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + errorMsg));
                 return ;
             }
         } catch (Exception e) {
-            ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+            ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误: 请求失败"));
             return ;
         }
 
@@ -157,18 +158,15 @@ public class GroupController  {
     @RequestMapping("/delete")
     public void deleteGroup(HttpServletRequest request, HttpServletResponse response, Group group) throws Exception {
 
-        Message message = new Message(-1, "");
         if (group.getId() == 0) {
-            message.setData("参数不全");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
             return ;
         }
 
         // 检测客户是否存在
         Group detectGroup = groupService.getGroupById(group.getId());
         if (detectGroup == null) {
-            message.setData("删除客户不存在");
-            ResponseUtil.setResponseJson(response, message);
+            ResponseUtil.setResponseJson(response, new Message(-1, "删除客户不存在"));
             return;
         }
 
@@ -182,22 +180,20 @@ public class GroupController  {
             resObj = JsonUtil.JsonToMap(RPCResult);
             if ((Integer)resObj.get("ret") != 0) {
                 ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+                return ;
             }
         } catch (Exception e) {
             ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + resObj.get("ret")));
+            return ;
         }
 
         // 删除客户 user_group_link 为casecade 会一并删除
+        Message message = new Message(-1, "删除失败");
         if (groupService.deleteGroupById(detectGroup.getId()) > 0) {
             message.setState(1);
             message.setData("删除成功");
-        } else {
-            message.setData("删除失败");
         }
         ResponseUtil.setResponseJson(response, message);
     }
-
-
-
 
 }

@@ -68,6 +68,8 @@ public class ContainerController {
         }
 
         // 添加Container
+        User user = (User) request.getSession().getAttribute("user");
+        container.setUser(user);
         container.setRegistTime(new Date());
         container.setUpdateTime(new Date());
         Long registTime = container.getRegistTime().getTime()/1000;
@@ -151,6 +153,35 @@ public class ContainerController {
         resData.put("perPage", this.perPage);
 
         ResponseUtil.setResponseJson(response, new Message(1, resData));
+    }
+
+    /**
+     * 删除container 创建者才有权限删除
+     */
+    @RequestMapping("/delete")
+    public void deleteContainer(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String containerId = request.getParameter("containerId");
+        if (containerId == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
+            return ;
+        }
+
+        // 查询当前container
+        Container container = containerService.getContainerById(containerId);
+        if (container == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "删除container不存在"));
+            return ;
+        }
+
+        User loginUser = (User) request.getSession().getAttribute("user");
+        if (loginUser.getId() != container.getUser().getId()) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "当前用户无权删除此container"));
+            return ;
+        }
+
+        containerService.deleteContainerById(containerId);
+        ResponseUtil.setResponseJson(response, new Message(1, "删除成功"));
     }
 
     @RequestMapping("/glist")

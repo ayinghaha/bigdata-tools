@@ -2,6 +2,7 @@ package com.iflytek.voicecloud.itm.service;
 
 import com.iflytek.voicecloud.itm.entity.analysis.OverAllData;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,6 +10,8 @@ import java.util.Map;
  */
 public interface WebDataService {
 
-    OverAllData getDailyData(Map<String, Object> condition);
+    OverAllData getOverAllData(Map<String, Object> condition);
+
+    List<OverAllData> getOverAllDataTrend(Map<String, Object> condition);
 
 }

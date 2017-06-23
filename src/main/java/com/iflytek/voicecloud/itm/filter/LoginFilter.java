@@ -57,7 +57,7 @@ public class LoginFilter extends OncePerRequestFilter {
                 message.setState(-2);
                 message.setData("用户未登录");
             } else if(!user.equals("admin") && (URI.contains("user") || URI.contains("group") || URI.contains("setUserPrivileges"))) {
-                // 非admin用户不能访问 user 和 group 模块
+                // 非admin用户不能访问 user 和 group 模块 但是普通用户可以修改密码
                 message.setState(-3);
                 message.setData("普通用户禁止访问此模块");
             } else {

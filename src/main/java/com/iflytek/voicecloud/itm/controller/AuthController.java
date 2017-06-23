@@ -88,6 +88,7 @@ public class AuthController {
         // 登录状态保存到session中
         httpSession.setAttribute("userName", userName);
         httpSession.setAttribute("groups", groups);
+        httpSession.setAttribute("user", user);
 
         message.setState(1);
         message.setData(resMap);
@@ -121,6 +122,41 @@ public class AuthController {
             message.setData("用户退出成功");
         }
         ResponseUtil.setResponseJson(response, message);
+    }
+
+    @RequestMapping("changePassword")
+    public void userChangePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String password = request.getParameter("password");
+        String newPassword = request.getParameter("newPassword");
+        if (password == null || newPassword == null || password.equals(newPassword)) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全或新旧密码相同"));
+            return;
+        }
+
+        // 验证原密码是否正确
+        User user = (User) request.getSession().getAttribute("user");
+        String detectPassword = StringUtil.generateMd5(password + user.getSalt());
+        if (!detectPassword.equals(user.getPassword())) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "用户密码不正确"));
+            return;
+        }
+
+        // 检测新密码是否符合要求
+        if (!newPassword.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$")) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "新密码须为6-12位字母和数字组合"));
+            return ;
+        }
+
+        // 更新用户密码
+        String genSaltPassword = StringUtil.generateMd5(newPassword + user.getSalt());
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setPassword(genSaltPassword);
+        updateUser.setPlainPassword(newPassword);
+        userService.UpdateByUser(updateUser);
+
+        request.getSession().setAttribute("userName", "");
+        ResponseUtil.setResponseJson(response, new Message(1, "更新密码成功"));
     }
 
     @RequestMapping("/getUserPrivileges")

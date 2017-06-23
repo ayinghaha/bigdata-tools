@@ -33,6 +33,11 @@ public class Container {
     private String type;
 
     /**
+     * 创建user
+     */
+    private User user;
+
+    /**
      * 记录时间
      */
     public Date registTime;
@@ -83,6 +88,14 @@ public class Container {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getRegistTime() {

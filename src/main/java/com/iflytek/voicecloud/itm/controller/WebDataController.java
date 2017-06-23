@@ -1,6 +1,8 @@
 package com.iflytek.voicecloud.itm.controller;
 
 import com.iflytek.voicecloud.itm.dto.Message;
+import com.iflytek.voicecloud.itm.dto.OverAllDto;
+import com.iflytek.voicecloud.itm.entity.analysis.OverAllData;
 import com.iflytek.voicecloud.itm.service.WebDataService;
 import com.iflytek.voicecloud.itm.utils.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +50,61 @@ public class WebDataController {
             return ;
         }
 
-        Map<String, Object> condition = new HashMap<String, Object>();
+        // 查询条件
+        Map<String, Object> condition = getQueryTimeCondition(queryTime);
         condition.put("containerId", containerId);
         condition.put("webType", webType);
+        condition.put("queryTime", queryTime);
+        OverAllData overviewData = webDataService.getOverAllData(condition);
+        if (overviewData == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "查询数据为空"));
+            return;
+        }
 
+        Message message = new Message(1, OverAllDto.formatOverAllDataJson(overviewData));
+        ResponseUtil.setResponseJson(response, message);
+    }
+
+    @RequestMapping("/trend")
+    public void getWebDataTrend(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String containerId = request.getParameter("containerId");
+        String webType = request.getParameter("webType");
+        String queryTime = request.getParameter("queryTime") != null ? request.getParameter("queryTime") : "today";
+
+        // 检测参数
+        if (containerId == null || webType == null || queryTime == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
+            return ;
+        } else if (!Arrays.asList(webTypeArray).contains(webType) || !Arrays.asList(queryTimeArray).contains(queryTime)) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数类型不正确"));
+            return ;
+        }
+
+        // 查询条件
+        Map<String, Object> condition = getQueryTimeCondition(queryTime);
+        condition.put("containerId", containerId);
+        condition.put("webType", webType);
+        condition.put("queryTime", queryTime);
+        List<OverAllData> dataList = webDataService.getOverAllDataTrend(condition);
+        List<Map<String, Object>> resMap = new ArrayList<Map<String, Object>>();
+        for (OverAllData overAllData : dataList) {
+            resMap.add(OverAllDto.formatOverAllDataJson(overAllData));
+        }
+
+        ResponseUtil.setResponseJson(response, new Message(1, resMap));
+    }
+
+    /**
+     * 根据查询类型时间获取查询条件
+     * @param queryTime     string "today", "yesterday", "lastWeek", "lastMonth"
+     * @return      查询条件
+     */
+    private Map<String, Object> getQueryTimeCondition(String queryTime) {
         // 日期查询条件
         SimpleDateFormat dateFormate = new SimpleDateFormat("yyyy-MM-dd");
         Calendar calendar = Calendar.getInstance();
+        Map<String, Object> condition = new HashMap<String, Object>();
         if (queryTime.equals("today") || queryTime.equals("yesterday")) {
             // 获取昨日或今日的起始时间
             if (queryTime.equals("yesterday")) calendar.add(Calendar.DATE, -1);
@@ -77,13 +127,7 @@ public class WebDataController {
             condition.put("endTime", dateFormate.format(calendar.getTime()) + " 23:00:00");
         }
 
-
-
-
-       /* OverAllData overAllDaily = webDataService.getDailyByid(Integer.parseInt(id));
-        System.out.println(overAllDaily);
-
-        ResponseUtil.setResponseJson(response, new Message(1, JsonUtil.ObjectToJson(overAllDaily)));*/
+        return condition;
     }
 
 }
