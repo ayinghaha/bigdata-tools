@@ -14,4 +14,5 @@ public interface WebDataService {
 
     List<OverAllData> getOverAllDataTrend(Map<String, Object> condition);
 
+    List<OverAllData> getAdEffectDataTrend(Map<String, Object> condition);
 }

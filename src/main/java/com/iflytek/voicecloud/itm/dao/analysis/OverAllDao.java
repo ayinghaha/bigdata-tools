@@ -24,4 +24,11 @@ public interface OverAllDao {
      */
     List<OverAllData> getOverAllDataTrend(Map<String, Object> condition);
 
+    /**
+     * 查询广告效果趋势
+     * @param condition     查询条件
+     * @return      时间段内每日/小时数据
+     */
+    List<OverAllData> getAdEffectDataTrend(Map<String, Object> condition);
+
 }

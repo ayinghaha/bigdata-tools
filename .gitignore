@@ -1,3 +1,5 @@
 target/*
 .idea/*
 itm-web-service.iml
+itm-web-config.iml
+.DS_Store

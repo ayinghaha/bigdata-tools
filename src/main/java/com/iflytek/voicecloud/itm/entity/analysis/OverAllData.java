@@ -55,7 +55,7 @@ public class OverAllData {
     /**
      * 二跳量，用户访问一个网站的深度大于等于2
      */
-    private int devpthOver2;
+    private int depthOver2;
 
     /**
      * 平均停留时间
@@ -79,7 +79,7 @@ public class OverAllData {
                 ", ipNum=" + ipNum +
                 ", vv=" + vv +
                 ", depth1=" + depth1 +
-                ", devpthOver2=" + devpthOver2 +
+                ", depthOver2=" + depthOver2 +
                 ", avgDetentionTime=" + avgDetentionTime +
                 ", avgPageDepth=" + avgPageDepth +
                 '}';
@@ -157,12 +157,12 @@ public class OverAllData {
         this.depth1 = depth1;
     }
 
-    public int getDevpthOver2() {
-        return devpthOver2;
+    public int getDepthOver2() {
+        return depthOver2;
     }
 
-    public void setDevpthOver2(int devpthOver2) {
-        this.devpthOver2 = devpthOver2;
+    public void setDepthOver2(int depthOver2) {
+        this.depthOver2 = depthOver2;
     }
 
     public float getAvgDetentionTime() {

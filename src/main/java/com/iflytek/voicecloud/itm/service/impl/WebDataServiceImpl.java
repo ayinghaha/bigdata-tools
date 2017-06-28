@@ -35,4 +35,15 @@ public class WebDataServiceImpl implements WebDataService {
     public List<OverAllData> getOverAllDataTrend(Map<String, Object> condition) {
         return overAllDao.getOverAllDataTrend(condition);
     }
+
+    /**
+     * 查询广告效果趋势
+     * @param condition     查询条件
+     * @return      时间段内每日/小时数据
+     */
+    public List<OverAllData> getAdEffectDataTrend(Map<String, Object> condition) {
+        return overAllDao.getAdEffectDataTrend(condition);
+    }
+
+
 }
