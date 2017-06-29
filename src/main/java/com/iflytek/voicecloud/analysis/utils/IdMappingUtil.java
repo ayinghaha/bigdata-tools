@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import static com.iflytek.voicecloud.analysis.utils.IdMappingConstant.*;
 
 /**
- * Created by liuying on 2017/6/26
+ * Created by liuying on 2017/6/26.
  */
 public class IdMappingUtil {
     private static final Log LOG = LogFactory.getLog(IdMappingUtil.class);
@@ -52,6 +52,10 @@ public class IdMappingUtil {
 
     private static CloseableHttpClient httpClient ;
 
+    /**
+     * 创建httpclient连接，单例
+     * @return
+     */
     public static CloseableHttpClient getHttpClient(){
         if(httpClient==null){
             httpClient = HttpClients.custom()
@@ -87,7 +91,6 @@ public class IdMappingUtil {
     /**
      * post方式请求远程数据接口
      * @param url       请求地址
-     * @return          返回数据
      */
     public static void getRemoteDataByPost(String url,HttpServletRequest request, HttpServletResponse response ){
         HttpPost httpPost = new HttpPost(url);
@@ -134,7 +137,7 @@ public class IdMappingUtil {
     /**
      * post方式请求远程数据接口
      * @param url       请求地址
-     * @return          返回数据
+     * @param reqParam  可以自定义请求参数
      */
     public static void getRemoteDataByPost(String url,Map<String,Object> reqParam, HttpServletResponse response )  {
         HttpPost httpPost = new HttpPost(url);
@@ -177,15 +180,21 @@ public class IdMappingUtil {
         }
         reqParam.clear();
     }
-    //创建基础请求参数
-    public static Map<String, Object> createDefaultParams(HttpServletRequest request,HttpServletResponse response){
 
+
+    /**
+     *  创建基础请求参数
+     * @param request
+     * @param response
+     * @return
+     */
+    public static Map<String, Object> createDefaultParams(HttpServletRequest request,HttpServletResponse response){
         String token=getGroupToken(request,response);
-        String version=setDefaultVal((String)request.getAttribute(VERSION),VERSION_VAL);
+        String version=setDefaultVal((String)request.getParameter(VERSION),VERSION_VAL);
         String[] time_range=getDateRange(TOTAL_MONTHS).split(SEPARATOR);
-        String all=setDefaultVal((String)request.getAttribute(ALL),ZERO);
-        String cid=setDefaultVal((String)request.getAttribute(CID),ZERO);
-        String import_id=setDefaultVal((String)request.getAttribute(IMPORT_ID),ZERO);
+        String all=setDefaultVal((String)request.getParameter(ALL),ZERO);
+        String cid=setDefaultVal((String)request.getParameter(CID),ZERO);
+        String import_id=setDefaultVal((String)request.getParameter(IMPORT_ID),ZERO);
 
         Map<String, Object> params=new HashMap<String, Object>();
         params.put(TOKEN,token);
@@ -198,7 +207,11 @@ public class IdMappingUtil {
         return params;
     }
 
-    //返回最近index月的起止日期
+    /**
+     * 返回最近index月的起止日期
+     * @param index
+     * @return
+     */
     public static String getDateRange(int index){
         Calendar date=Calendar.getInstance();
         DateFormat df = new SimpleDateFormat("yyyyMMdd");
@@ -224,7 +237,7 @@ public class IdMappingUtil {
      * @return Message  包含token字段
      */
     public static String getGroupToken(HttpServletRequest request,HttpServletResponse response) {
-        String groupId=(String)request.getSession().getAttribute(GROUP_ID);
+        String groupId=(String)request.getParameter(GROUP_ID);
         String token=null;
         // 从session中保存的客户列表中获取对应的token
         List<Group> groups = (List<Group>) request.getSession().getAttribute(GROUPS);
@@ -246,6 +259,11 @@ public class IdMappingUtil {
         return token;
     }
 
+    /**
+     * 发送返回消息
+     * @param response
+     * @param message
+     */
     public static void setResponseJson(HttpServletResponse response, Message message)  {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
@@ -265,5 +283,5 @@ public class IdMappingUtil {
         }
         out.write(resJson);
     }
-    
+
 }
