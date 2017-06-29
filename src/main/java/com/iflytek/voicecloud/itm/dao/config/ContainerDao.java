@@ -39,6 +39,13 @@ public interface ContainerDao {
     int deleteContainerById(String containerId);
 
     /**
+     * 更新container
+     * @param container     更新Container对象
+     * @return      是否更新成功
+     */
+    int updateContainer(Container container);
+
+    /**
      * 根据条件获取Container数量
      * @param condition     条件Map
      * @return  查询条件下的Container数量

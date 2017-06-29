@@ -156,6 +156,51 @@ public class ContainerController {
     }
 
     /**
+     * 编辑
+     * @param request       request
+     * @param response      response
+     * @throws Exception    异常
+     */
+    @RequestMapping("/edit")
+    public void editContainer(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        String containerId = request.getParameter("containerId");
+        String name = request.getParameter("name");
+        String type = request.getParameter("type");
+
+        List<String> typeList = Arrays.asList(containerType);
+        if (containerId == null || name == null || type == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
+            return ;
+        } else if (!typeList.contains(type)) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "类型不正确"));
+            return ;
+        }
+
+        // 查询当前container
+        Container container = containerService.getContainerById(containerId);
+        if (container == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "编辑container不存在"));
+            return ;
+        }
+
+        User loginUser = (User) request.getSession().getAttribute("user");
+        if (loginUser.getId() != container.getUser().getId()) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "当前用户无权编辑此container"));
+            return ;
+        }
+
+        // 更新Container
+        container.setType(type);
+        container.setName(name);
+        if (containerService.updateContainer(container) > 0) {
+            ResponseUtil.setResponseJson(response, new Message(1, "编辑成功"));
+        } else {
+            ResponseUtil.setResponseJson(response, new Message(1, "编辑失败"));
+        }
+    }
+
+    /**
      * 删除container 创建者才有权限删除
      */
     @RequestMapping("/delete")

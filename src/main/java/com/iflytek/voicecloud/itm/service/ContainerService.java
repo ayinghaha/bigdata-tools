@@ -20,4 +20,6 @@ public interface ContainerService {
 
     int deleteContainerById(String containerId);
 
+    int updateContainer(Container container);
+
 }

@@ -26,6 +26,10 @@
         delete from t_container where container_id = #{id}
     </delete>
 
+    <update id="updateContainer" parameterType="Container" >
+        update t_container set name=#{name}, type=#{type} where container_id = #{containerID}
+    </update>
+
     <select id="getContainerList" parameterType="Map" resultMap="ContainerResult">
         select * from t_container
         <where>
