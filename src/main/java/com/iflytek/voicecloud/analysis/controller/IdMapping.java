@@ -23,18 +23,26 @@ import static com.iflytek.voicecloud.analysis.utils.IdMappingUtil.*;
 @RequestMapping("/idmapping")
 public class IdMapping {
     @RequestMapping("/total_count")
+    /**
+     * 获取id数量接口
+     */
     private void IdTotalCount(HttpServletRequest request, HttpServletResponse response){
         getRemoteDataByPost(ID_TOTAL_COUNT_URL,request,response);
     }
     @RequestMapping("/through_count")
+    /**
+     * 获取id打通数量接口
+     */
     private void IdThroughCount(HttpServletRequest request, HttpServletResponse response){
         getRemoteDataByPost(ID_THROUGH_COUNT_URL,request,response);
     }
     @RequestMapping("/crowd_select")
+    /**
+     * 获取import_id列表(暂时未用到）
+     */
     private void crowdSelect(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> reqParam=new HashMap<String,Object>();
         String token=getGroupToken(request,response);
-//        String token="D32A5B1FFB54DF798C5C8EF7C2E14DE4";
         reqParam.put(TASK_TYPE,IMPORT_TASK_TYPE);
         reqParam.put(TOKEN,token);
         getRemoteDataByPost(IMPORT_QUERY_URL,reqParam,response);
