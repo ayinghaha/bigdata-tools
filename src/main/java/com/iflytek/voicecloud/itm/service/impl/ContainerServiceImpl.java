@@ -50,6 +50,15 @@ public class ContainerServiceImpl implements ContainerService {
     }
 
     /**
+     * 更新container
+     * @param container     更新Container对象
+     * @return      是否更新成功
+     */
+    public int updateContainer(Container container) {
+        return containerDao.updateContainer(container);
+    }
+
+    /**
      * 通过主键删除container
      * @param containerId   主键id
      * @return      是否成功

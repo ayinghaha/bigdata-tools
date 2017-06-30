@@ -307,9 +307,13 @@ public class WebDataController {
          String startDate = request.getParameter("startDate");
          String endDate = request.getParameter("endDate");
          String pageUrl = request.getParameter("pageUrl");
+         String queryType = request.getParameter("queryType");
 
         if (containerId == null || webType == null || pageUrl == null || startDate == null || endDate == null) {
             ResponseUtil.setResponseJson(response, new Message(-1, "参数不全"));
+            return ;
+        } else if (!queryType.equals("hour") && !queryType.equals("day")) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "查询时间类型不正确"));
             return ;
         }
 
@@ -319,6 +323,13 @@ public class WebDataController {
         condition.put("startTime", startDate + " 00:00:00");
         condition.put("endTime", endDate + " 23:00:00");
         condition.put("pageUrl", pageUrl);
+        condition.put("queryType", queryType);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if ( (simpleDateFormat.parse(endDate).getTime() - simpleDateFormat.parse(startDate).getTime()) / 86400000 > 7 && queryType.equals("hour") ) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "查询时段禁止查询小时数据"));
+            return ;
+        }
 
         List<PageUrl> pageUrls = pageUrlService.pageUrlAnalysisTrend(condition);
         if (pageUrls == null || pageUrls.size() == 0) {

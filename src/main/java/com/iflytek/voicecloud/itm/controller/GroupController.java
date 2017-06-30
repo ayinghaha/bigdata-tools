@@ -62,7 +62,7 @@ public class GroupController  {
         try {
             resObj = JsonUtil.JsonToMap(RPCResult);
             if ((Integer)resObj.get("ret") != 0) {
-                String errorMsg = (Integer) resObj.get("ret") == 20011 ? "用户名已存在" : resObj.get("ret") + "";
+                String errorMsg = (Integer) resObj.get("ret") == 20011 ? "客户名已存在" : resObj.get("ret") + "";
                 ResponseUtil.setResponseJson(response, new Message(-1, "远程接口错误:" + errorMsg));
                 return ;
             }
