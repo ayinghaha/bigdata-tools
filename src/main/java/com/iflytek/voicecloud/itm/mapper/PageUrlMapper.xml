@@ -55,7 +55,13 @@
     </select>
 
     <select id="pageAnalysisTrend" parameterType="Map" resultMap="PageUrlResult">
-        select * from t_pageurl_daily
+
+        <if test=" queryType == 'day' ">
+            select * from t_pageurl_daily
+        </if>
+        <if test=" queryType == 'hour' ">
+            select * from t_pageurl_hourly_2017
+        </if>
         <where>
             start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
             <if test=" containerId != null">

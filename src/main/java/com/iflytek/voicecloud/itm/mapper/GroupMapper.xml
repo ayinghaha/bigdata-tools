@@ -44,7 +44,8 @@
                 g.id = #{id}
             </if>
             <if test="groupName != null and groupName != '' ">
-                and g.name like CONCAT('%',#{groupName},'%')
+                <!--and g.name like CONCAT('%',#{groupName},'%')-->
+                and g.name = #{groupName}
             </if>
             <if test="userName != null and userName != '' ">
                 and u.user_name like CONCAT('%',#{userName},'%')
