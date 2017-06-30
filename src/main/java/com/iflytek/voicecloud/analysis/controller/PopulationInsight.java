@@ -164,6 +164,37 @@ public class PopulationInsight {
 
         response.getWriter().write(result);
     }
+
+    @RequestMapping("/extend")
+    public void populationExtend(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        // 接收参数
+
+
+        //  JsonNode json = parseRequest(request);
+        int tagid = Integer.parseInt(request.getParameter("tagid"));
+        float increase = Float.parseFloat(request.getParameter("increase"));
+
+        String token = "70F5E3AF1A6AD6B13375626DB5D0C123";
+        if (token == null) {
+            ResponseUtil.setResponseJson(response, new Message(-1, "用户未登录"));
+            return;
+        }
+
+        // 构造参数
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("token", token);
+        param.put("ver", "1.0");
+        param.put("operation", "extend");
+        param.put("tagid", tagid);
+        param.put("increase", increase);
+
+        // 获取远程接口
+        String result = HttpTools.getRemoteData("http://192.168.72.124:8080/aac/insight/buildtag", param);
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write(result);
+    }
     @RequestMapping("/edit")
     public void populationedit(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -253,6 +284,7 @@ public class PopulationInsight {
 
 
         int tagid = Integer.parseInt(request.getParameter("tagid"));
+        float increase = Float.parseFloat(request.getParameter("increase"));
 
         String token = "70F5E3AF1A6AD6B13375626DB5D0C123";
         if (token == null) {
@@ -267,6 +299,7 @@ public class PopulationInsight {
         param.put("operation", "export");
         param.put("tagid", tagid);
         param.put("platform", "ad");
+        param.put("increase", increase);
 
         // 获取远程接口
         String result = HttpTools.getRemoteData("http://192.168.72.124:8080/aac/insight/buildtag", param);
@@ -330,18 +363,20 @@ public class PopulationInsight {
     }
 
     //对应接口5.3
-    @RequestMapping("/improtid")
+    @RequestMapping("/importid")
     public void populationGetImportId(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // 接收参数
-        int userid = Integer.parseInt(request.getParameter("userid"));
+         int userid = Integer.parseInt(request.getParameter("userid"));
 
         List<Group> groups = (List<Group>) request.getSession().getAttribute("groups");
+
         String token =null;
         for(Group group:groups){
-            if(userid==group.getId())
+            if(userid==group.getId()) {
                 token = group.getToken();
-
+                break;
+            }
         }
 
 
