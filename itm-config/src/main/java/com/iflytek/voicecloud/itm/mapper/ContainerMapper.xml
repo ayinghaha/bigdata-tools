@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.config.ContainerDao">
+
+    <resultMap id="ContainerResult" type="Container">
+        <id property="id" column="id" />
+        <result property="itmID" column="itm_id" />
+        <result property="containerID" column="container_id"/>
+        <result property="type" column="type"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="user" column="user_id" select="com.iflytek.voicecloud.itm.dao.config.UserDao.getUserById" />
+    </resultMap>
+
+    <insert id="addContainer" parameterType="Container" keyProperty="id" useGeneratedKeys="true">
+        insert into t_container values(null, #{itmID}, #{containerID}, #{name}, #{type}, #{registTime}, #{updateTime}, #{user.id})
+    </insert>
+
+    <select id="getContainerById" parameterType="String" resultMap="ContainerResult">
+        select * from t_container where container_id = #{id}
+    </select>
+
+    <delete id="deleteContainerById" parameterType="String" >
+        delete from t_container where container_id = #{id}
+    </delete>
+
+    <update id="updateContainer" parameterType="Container" >
+        update t_container set name=#{name}, type=#{type} where container_id = #{containerID}
+    </update>
+
+    <select id="getContainerList" parameterType="Map" resultMap="ContainerResult">
+        select * from t_container
+        <where>
+            <if test="containerID != null">
+                container_id = #{containerID}
+            </if>
+            <if test="itmID != null">
+                and itm_id in
+                <foreach collection="itmID" item="itmId" index="index" open="(" close=")" separator=",">
+                    #{itmId}
+                </foreach>
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="keyWords != null and keyWords != '' ">
+                and (type like CONCAT('%',#{keyWords},'%') or name like CONCAT('%',#{keyWords},'%'))
+            </if>
+        </where>
+        order by regist_time desc
+        <if test="page != null">
+            limit #{page}, #{perPage}
+        </if>
+    </select>
+
+    <select id="countContainer" parameterType="Map" resultType="Integer">
+        select count(*) from t_container
+        <where>
+            <if test="containerID != null">
+                container_id = #{containerID}
+            </if>
+            <if test="itmID != null">
+                and itm_id in
+                <foreach collection="itmID" item="itmId" index="index" open="(" close=")" separator=",">
+                    #{itmId}
+                </foreach>
+            </if>
+            <if test="keyWords != null and keyWords != '' ">
+                and (type like CONCAT('%',#{keyWords},'%') or name like CONCAT('%',#{keyWords},'%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.analysis.OverAllDao">
+
+    <resultMap id="OverAllDataResult" type="OverAllData">
+        <result property="startTime" column="start_time" />
+        <result property="containerId" column="container_id" />
+        <result property="webType" column="web_type"/>
+        <result property="pv" column="pv"/>
+        <result property="uv" column="uv"/>
+        <result property="uvOld" column="uv_old"/>
+        <result property="ipNum" column="ip_num"/>
+        <result property="vv" column="vv"/>
+        <result property="depth1" column="depth1"/>
+        <result property="depthOver2" column="depth_over_2"/>
+        <result property="avgDetentionTime" column="avg_detention_time"/>
+        <result property="avgPageDepth" column="avg_page_depth"/>
+    </resultMap>
+
+    <select id="getOverviewData" parameterType="Map" resultMap="OverAllDataResult">
+        <if test=" queryTime == 'today' ">
+            select *, sum(pv) as pv from t_overall_hourly_2017
+        </if>
+        <if test=" queryTime == 'yesterday' ">
+            select * from t_overall_daily
+        </if>
+        <if test=" queryTime == 'lastWeek' ">
+            select * from t_overall_weekly
+        </if>
+        <if test=" queryTime == 'lastMonth' ">
+            select * from t_overall_monthly
+        </if>
+        <if test=" queryTime == null or queryTime == '' ">
+            select  sum(pv) as pv,
+                    sum(vv) as vv,
+                    sum(avg_detention_time * vv) as avg_detention_time,
+                    sum(avg_page_depth * vv) as avg_page_depth,
+                    sum(depth1) as depth1,
+                    sum(depth_over_2) as depth_over_2,
+                    start_time
+            from t_overall_daily
+        </if>
+            <where>
+                <if test=" queryTime != null ">
+                    start_time = #{startTime}
+                </if>
+                <if test=" queryTime == null or queryTime == '' ">
+                    start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
+                </if>
+                <if test=" containerId != null">
+                    and container_id = #{containerId}
+                </if>
+                <if test=" webType != null">
+                    and web_type = #{webType}
+                </if>
+            </where>
+    </select>
+
+    <select id="getOverAllDataTrend" parameterType="Map" resultMap="OverAllDataResult">
+        <if test=" queryTime == 'today' or queryTime == 'yesterday' ">
+            select * from t_overall_hourly_2017
+        </if>
+        <if test=" queryTime == 'lastWeek' or queryTime == 'lastMonth' ">
+            select * from t_overall_daily
+        </if>
+
+        <where>
+            start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
+            <if test=" containerId != null">
+                and container_id = #{containerId}
+            </if>
+            <if test=" webType != null">
+                and web_type = #{webType}
+            </if>
+        </where>
+        order by start_time asc
+    </select>
+
+    <select id="getAdEffectDataTrend" parameterType="Map" resultMap="OverAllDataResult">
+
+        <if test=" queryType == 'day' ">
+            select * from t_overall_daily
+        </if>
+        <if test=" queryType == 'hour' ">
+            select * from t_overall_hourly_2017
+        </if>
+
+        <where>
+            start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
+            <if test=" containerId != null">
+                and container_id = #{containerId}
+            </if>
+            <if test=" webType != null">
+                and web_type = #{webType}
+            </if>
+        </where>
+        order by start_time asc
+
+    </select>
+
+
+</mapper>

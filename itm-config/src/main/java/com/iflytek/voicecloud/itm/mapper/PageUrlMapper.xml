@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.analysis.PageUrlDao">
+
+    <resultMap id="PageUrlResult" type="PageUrl">
+        <result property="startTime" column="start_time" />
+        <result property="containerId" column="container_id" />
+        <result property="webType" column="web_type"/>
+        <result property="pv" column="pv"/>
+        <result property="vv" column="vv"/>
+        <result property="pageUrl" column="page_url"/>
+        <result property="avgDetentionTime" column="avg_detention_time"/>
+    </resultMap>
+
+    <select id="pageAnalysis" parameterType="Map" resultMap="PageUrlResult">
+        <if test=" queryTime == 'today' ">
+            select *, sum(pv) as pv from t_pageurl_hourly_2017
+        </if>
+        <if test=" queryTime == 'yesterday' ">
+            select * from t_pageurl_daily
+        </if>
+        <if test=" queryTime == 'lastWeek' ">
+            select * from t_pageurl_weekly
+        </if>
+        <if test=" queryTime == 'lastMonth' ">
+            select * from t_pageurl_monthly
+        </if>
+        <if test=" queryTime == null or queryTime == '' ">
+            select  sum(pv) as pv,
+            sum(vv) as vv,
+            sum(avg_detention_time * vv) as avg_detention_time,
+            page_url,
+            start_time
+            from t_pageurl_daily
+        </if>
+
+        <where>
+            <if test=" queryTime != null ">
+                start_time = #{startTime}
+            </if>
+            <if test=" queryTime == null or queryTime == '' ">
+                start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
+            </if>
+            <if test=" containerId != null">
+                and container_id = #{containerId}
+            </if>
+            <if test=" webType != null">
+                and web_type = #{webType}
+            </if>
+        </where>
+        group by page_url
+        order by pv desc
+    </select>
+
+    <select id="pageAnalysisTrend" parameterType="Map" resultMap="PageUrlResult">
+
+        <if test=" queryType == 'day' ">
+            select * from t_pageurl_daily
+        </if>
+        <if test=" queryType == 'hour' ">
+            select * from t_pageurl_hourly_2017
+        </if>
+        <where>
+            start_time &gt;= #{startTime} and start_time &lt;= #{endTime}
+            <if test=" containerId != null">
+                and container_id = #{containerId}
+            </if>
+            <if test=" webType != null">
+                and web_type = #{webType}
+            </if>
+            <if test=" pageUrl != null ">
+                and page_url = #{pageUrl}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

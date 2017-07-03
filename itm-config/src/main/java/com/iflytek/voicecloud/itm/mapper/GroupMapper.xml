@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iflytek.voicecloud.itm.dao.config.GroupDao">
+
+    <resultMap id="GroupResult" type="Group">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="company" column="company"/>
+        <result property="remark" column="remark"/>
+        <result property="itmID" column="itm_id"/>
+        <result property="token" column="token"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="UserResult" type="User">
+        <id property="id" column="id" />
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="remark" column="remark"/>
+        <result property="lastLogin" column="last_login"/>
+        <result property="registTime" column="regist_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <insert id="addGroup" parameterType="Group" keyProperty="id" useGeneratedKeys="true">
+        insert into t_group values(null, #{name}, #{company}, #{remark}, #{itmID}, #{token}, #{registTime}, #{updateTime})
+    </insert>
+
+    <sql id="groupCondition">
+        <if test="userId != null or userName != null">
+            join t_user_group_link ugl on g.id = ugl.group_id
+            join t_user u on ugl.user_id = u.id
+        </if>
+        <where>
+            <if test="userId != null">
+                u.id = #{userId}
+            </if>
+            <if test="id != null">
+                g.id = #{id}
+            </if>
+            <if test="groupName != null and groupName != '' ">
+                <!--and g.name like CONCAT('%',#{groupName},'%')-->
+                and g.name = #{groupName}
+            </if>
+            <if test="userName != null and userName != '' ">
+                and u.user_name like CONCAT('%',#{userName},'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="getGroup" parameterType="Map" resultMap="GroupResult">
+        select * from t_group g
+        <include refid="groupCondition" />
+        order by g.regist_time desc
+        <if test="page != null">
+            limit #{page}, #{perPage}
+        </if>
+    </select>
+
+    <select id="getGroupCount" parameterType="Map" resultType="Integer">
+        select count(*) from t_group g
+        <include refid="groupCondition" />
+    </select>
+
+    <select id="getGroupById" parameterType="Integer" resultMap="GroupResult">
+        select * from t_group where id = #{groupId}
+    </select>
+
+    <update id="updateGroup" parameterType="Group">
+        update t_group set name=#{name}, company=#{company}, remark=#{remark} where id=#{id}
+    </update>
+
+    <select id="getUserListByGroup" parameterType="Map" resultMap="UserResult">
+        select u.id, u.user_name, ugl.remark
+            from t_user u
+            join t_user_group_link ugl
+                on u.id = ugl.user_id
+        <where>
+            <if test="groupId != null">
+                ugl.group_id = #{groupId}
+            </if>
+            <if test="userName != null">
+                and u.user_name like CONCAT('%',#{userName},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteGroupById" parameterType="Integer">
+        delete from t_group where id=#{id}
+    </delete>
+
+</mapper>
